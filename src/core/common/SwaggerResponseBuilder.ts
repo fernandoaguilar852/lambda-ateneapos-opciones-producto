@@ -3,7 +3,8 @@ import {
   SwaggerErrorResponse,
   SwaggerResponseHeaders,
   SwaggerMessageResponse,
-  SwaggerErrorItem
+  SwaggerErrorItem,
+  SwaggerPagination
 } from './swaggerTypes';
 
 export class SwaggerResponseBuilder {
@@ -18,7 +19,8 @@ export class SwaggerResponseBuilder {
     requestAppId: string,
     responseCode: string = '0000',
     responseMessage: string = 'Success',
-    responseDetails: string = 'Operation completed successfully'
+    responseDetails: string = 'Operation completed successfully',
+    pagination?: SwaggerPagination
   ): SwaggerSuccessResponse<T> {
 
     const headers: SwaggerResponseHeaders = {
@@ -35,11 +37,18 @@ export class SwaggerResponseBuilder {
       responseDetails
     };
 
-    return {
+    const response: SwaggerSuccessResponse<T> = {
       headers,
       messageResponse,
       data
     };
+
+    // Agregar paginación si existe
+    if (pagination) {
+      response.pagination = pagination;
+    }
+
+    return response;
   }
 
   /**

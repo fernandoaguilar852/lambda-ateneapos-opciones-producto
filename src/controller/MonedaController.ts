@@ -76,22 +76,31 @@ export class MonedaController implements IMonedaController {
   }
 
   /**
-   * GET /v1/pos/monedas - Listar monedas
+   * GET /v1/pos/monedas - Listar monedas con paginación
    */
   async listAllMonedas(
     messageUuid: string,
-    requestAppId: string
+    requestAppId: string,
+    pageSize?: number,
+    pageNumber?: number
   ): Promise<APIGatewayProxyResult> {
     try {
-      // Llamar a la lógica de negocio
-      const data = await this.monedaBL.listAllMonedas();
+      // Llamar a la lógica de negocio con parámetros de paginación
+      const result = await this.monedaBL.listAllMonedas(pageSize, pageNumber);
+
+      // Extraer paginación del resultado
+      const { pagination, ...data } = result;
 
       // Construir respuesta exitosa (200 OK)
       const response = SwaggerResponseBuilder.buildSuccessResponse(
         200,
         data,
         messageUuid,
-        requestAppId
+        requestAppId,
+        '0000',
+        'Success',
+        'Operation completed successfully',
+        pagination
       );
 
       return {

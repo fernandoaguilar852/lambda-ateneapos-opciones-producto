@@ -4,6 +4,8 @@ export interface IMonedaRepository {
   createMoneda(data: MonedaRequestDTO): Promise<MonedaDTO>;
   getMonedaById(monedaId: number): Promise<MonedaDTO | null>;
   listAllMonedas(): Promise<MonedaDTO[]>;
+  countAllMonedas(): Promise<number>;
+  listMonedasPaginated(pageSize: number, offset: number): Promise<MonedaDTO[]>;
   updateMoneda(monedaId: number, data: MonedaRequestDTO): Promise<MonedaDTO | null>;
   deleteMoneda(monedaId: number): Promise<MonedaDTO | null>;
   checkMonedaExistsByIso(codigoIso: string, excludeId?: number): Promise<boolean>;

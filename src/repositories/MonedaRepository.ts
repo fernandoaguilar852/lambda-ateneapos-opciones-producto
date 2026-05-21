@@ -47,6 +47,25 @@ export class MonedaRepository implements IMonedaRepository {
   }
 
   /**
+   * Contar total de monedas
+   */
+  async countAllMonedas(): Promise<number> {
+    const result = await mysqlClient.query(QUERIES.COUNT_ALL_MONEDAS);
+    return parseInt(result.rows[0]?.count || '0');
+  }
+
+  /**
+   * Listar monedas con paginación
+   */
+  async listMonedasPaginated(pageSize: number, offset: number): Promise<MonedaDTO[]> {
+    const result = await mysqlClient.query(
+      QUERIES.LIST_MONEDAS_PAGINATED,
+      [pageSize, offset]
+    );
+    return result.rows as MonedaDTO[];
+  }
+
+  /**
    * Actualizar moneda existente
    */
   async updateMoneda(monedaId: number, data: MonedaRequestDTO): Promise<MonedaDTO | null> {

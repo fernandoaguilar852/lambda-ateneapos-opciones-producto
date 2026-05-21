@@ -16,7 +16,9 @@ export interface IMonedaController {
 
   listAllMonedas(
     messageUuid: string,
-    requestAppId: string
+    requestAppId: string,
+    pageSize?: number,
+    pageNumber?: number
   ): Promise<APIGatewayProxyResult>;
 
   updateMoneda(

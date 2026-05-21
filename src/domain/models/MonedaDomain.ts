@@ -1,4 +1,4 @@
-import { SwaggerSuccessResponse, SwaggerErrorResponse } from '../../core/common/swaggerTypes';
+import { SwaggerSuccessResponse, SwaggerErrorResponse, SwaggerPagination } from '../../core/common/swaggerTypes';
 
 // Modelo de dominio de Moneda (lo que se expone al cliente)
 export interface Moneda {
@@ -19,6 +19,7 @@ export type MonedaCreatedResponse = SwaggerSuccessResponse<Moneda>;
 // Respuesta para listado (GET /monedas)
 export interface MonedaListData {
   monedas: Moneda[];
+  pagination?: SwaggerPagination;
 }
 
 export type MonedaListResponse = SwaggerSuccessResponse<MonedaListData>;

@@ -19,11 +19,20 @@ export interface SwaggerErrorItem {
   errorDetail: string;
 }
 
+// Objeto de paginación
+export interface SwaggerPagination {
+  totalElement: number;
+  pageSize: number;
+  pageNumber: number;
+  hasMoreElements: boolean;
+}
+
 // Respuesta exitosa genérica
 export interface SwaggerSuccessResponse<T> {
   headers: SwaggerResponseHeaders;
   messageResponse: SwaggerMessageResponse;
   data: T;
+  pagination?: SwaggerPagination;
 }
 
 // Respuesta de error genérica

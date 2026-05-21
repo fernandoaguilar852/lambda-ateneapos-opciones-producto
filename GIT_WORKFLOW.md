@@ -45,15 +45,15 @@
 ### 1. Clonar el repositorio (si empiezas desde cero)
 
 ```bash
-git clone https://github.com/Hidrasoft/lambda-ateneapos-moneda.git
-cd lambda-ateneapos-moneda
+git clone https://github.com/Hidrasoft/lambda-ateneaall-moneda.git
+cd lambda-ateneaall-moneda
 ```
 
 ### 2. O configurar remote en proyecto existente
 
 ```bash
 cd /ruta/a/tu/proyecto
-git remote add origin https://github.com/Hidrasoft/lambda-ateneapos-moneda.git
+git remote add origin https://github.com/Hidrasoft/lambda-ateneaall-moneda.git
 ```
 
 ### 3. Verificar configuración
@@ -64,8 +64,8 @@ git remote -v
 
 Debe mostrar:
 ```
-origin  https://github.com/Hidrasoft/lambda-ateneapos-moneda.git (fetch)
-origin  https://github.com/Hidrasoft/lambda-ateneapos-moneda.git (push)
+origin  https://github.com/Hidrasoft/lambda-ateneaall-moneda.git (fetch)
+origin  https://github.com/Hidrasoft/lambda-ateneaall-moneda.git (push)
 ```
 
 ---
@@ -186,7 +186,7 @@ git pull origin main
 
 **Solución:**
 ```bash
-git remote set-url origin https://github.com/Hidrasoft/lambda-ateneapos-moneda.git
+git remote set-url origin https://github.com/Hidrasoft/lambda-ateneaall-moneda.git
 git remote -v  # Verificar
 ```
 
@@ -335,4 +335,4 @@ Si tienes problemas:
 ---
 
 **Última actualización:** 2026-01-09
-**Repositorio:** https://github.com/Hidrasoft/lambda-ateneapos-moneda
+**Repositorio:** https://github.com/Hidrasoft/lambda-ateneaall-moneda

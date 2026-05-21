@@ -1,7 +1,7 @@
 {
-  "name": "lambda-moneda",
+  "name": "lambda-ateneaall-moneda",
   "version": "1.0.0",
-  "description": "Lambda para gestión de emojis y monedas",
+  "description": "Lambda para gestión de monedas - Sistema POS Atenea",
   "main": "app.js",
   "scripts": {
     "build": "sam build",

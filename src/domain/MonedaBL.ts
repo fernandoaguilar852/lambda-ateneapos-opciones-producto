@@ -71,17 +71,41 @@ export class MonedaBL implements IMonedaBL {
   }
 
   /**
-   * Listar todas las monedas
+   * Listar todas las monedas con paginación
    */
-  async listAllMonedas(): Promise<MonedaListData> {
-    // Obtener todas las monedas
-    const monedasDTO = await this.monedaRepository.listAllMonedas();
+  async listAllMonedas(pageSize: number = 10, pageNumber: number = 1): Promise<MonedaListData> {
+    // Validar parámetros de paginación
+    if (pageSize <= 0 || pageSize > 100) {
+      throw new ValidationError('El pageSize debe estar entre 1 y 100');
+    }
+
+    if (pageNumber <= 0) {
+      throw new ValidationError('El pageNumber debe ser mayor a 0');
+    }
+
+    // Calcular offset
+    const offset = (pageNumber - 1) * pageSize;
+
+    // Obtener total de elementos
+    const totalElement = await this.monedaRepository.countAllMonedas();
+
+    // Obtener monedas paginadas
+    const monedasDTO = await this.monedaRepository.listMonedasPaginated(pageSize, offset);
 
     // Transformar a modelos de dominio
     const monedas = MonedaMapper.toDomainList(monedasDTO);
 
+    // Calcular si hay más elementos
+    const hasMoreElements = (offset + monedas.length) < totalElement;
+
     return {
-      monedas
+      monedas,
+      pagination: {
+        totalElement,
+        pageSize,
+        pageNumber,
+        hasMoreElements
+      }
     };
   }
 

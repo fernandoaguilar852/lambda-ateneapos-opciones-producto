@@ -60,9 +60,18 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent, context: Contex
             return await monedaController.createMoneda(body, messageUuid, requestAppId);
         }
 
-        // GET /v1/pos/monedas - Listar todas las monedas
+        // GET /v1/pos/monedas - Listar todas las monedas con paginación
         if (method === 'GET' && path === '/v1/pos/monedas') {
-            return await monedaController.listAllMonedas(messageUuid, requestAppId);
+            // Extraer parámetros de paginación de query string
+            const pageSize = event.queryStringParameters?.pageSize
+                ? parseInt(event.queryStringParameters.pageSize)
+                : 10; // Valor por defecto: 10
+
+            const pageNumber = event.queryStringParameters?.pageNumber
+                ? parseInt(event.queryStringParameters.pageNumber)
+                : 1; // Valor por defecto: 1
+
+            return await monedaController.listAllMonedas(messageUuid, requestAppId, pageSize, pageNumber);
         }
 
         // GET /v1/pos/monedas/{monedaId} - Consultar moneda por ID

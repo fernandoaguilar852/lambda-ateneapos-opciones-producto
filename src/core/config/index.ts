@@ -1,13 +1,13 @@
 import { DefaultValues } from '../utils/Constans';
 
 export default {
-    NODE_ENVIRONMENT: process.env.NODE_ENVIRONMENT ?? DefaultValues.NODE_ENV_DEV,
+    NODE_ENVIRONMENT: process.env.NODE_ENVIRONMENT ?? DefaultValues.NODE_ENV_QA,
     DATABASE: {
         LOCAL: {
             host: "db-atenea-pos.ctiw48myq04p.us-east-1.rds.amazonaws.com",
             user: "postgres",
             password: "KratosMilo123**",
-            database: "ateneapos",
+            database: "ateneaposall",
             port: 5432,
             ssl: {
                 rejectUnauthorized: false
@@ -17,7 +17,7 @@ export default {
             host: "db-atenea-pos.ctiw48myq04p.us-east-1.rds.amazonaws.com",
             user: "postgres",
             password: "KratosMilo123**",
-            database: "ateneapos",
+            database: "ateneaposall",
             port: 5432,
             ssl: {
                 rejectUnauthorized: false
@@ -27,7 +27,7 @@ export default {
             host: "db-atenea-pos.ctiw48myq04p.us-east-1.rds.amazonaws.com",
             user: "postgres",
             password: "KratosMilo123**",
-            database: "ateneapos",
+            database: "ateneaposall",
             port: 5432,
             ssl: {
                 rejectUnauthorized: false

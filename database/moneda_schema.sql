@@ -1,10 +1,10 @@
 -- ===================================================
 -- SCRIPT DE CREACIÓN DE TABLA MONEDA
--- Base de datos: ateneapos (PostgreSQL)
+-- Base de datos: ateneaposall (PostgreSQL)
 -- ===================================================
 
 -- Conectar a la base de datos
-\c ateneapos;
+\c ateneaposall;
 
 -- Eliminar tabla si existe (solo para desarrollo)
 -- DESCOMENTA LA SIGUIENTE LÍNEA SI QUIERES RECREAR LA TABLA

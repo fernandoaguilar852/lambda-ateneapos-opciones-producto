@@ -6,7 +6,7 @@ Resources:
   MonedasFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: lambda-ateneapos-moneda
+      FunctionName: lambda-ateneaall-moneda
       CodeUri: src/
       Description: 'Lambda para API REST de monedas - Sistema POS Atenea'
       MemorySize: 256
@@ -22,9 +22,9 @@ Resources:
           PG_HOST: db-atenea-pos.ctiw48myq04p.us-east-1.rds.amazonaws.com
           PG_USER: postgres
           PG_PASSWORD: KratosMilo123**
-          PG_DATABASE: ateneapos
+          PG_DATABASE: ateneaposall
           PG_PORT: 5432
-          NODE_ENVIRONMENT: DEV
+          NODE_ENVIRONMENT: QA
       EventInvokeConfig:
         MaximumEventAgeInSeconds: 21600
         MaximumRetryAttempts: 2
@@ -40,7 +40,7 @@ Resources:
                 - logs:CreateLogStream
                 - logs:PutLogEvents
               Resource:
-                - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/lambda-ateneapos-moneda:*'
+                - !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/lambda-ateneaall-moneda:*'
       SnapStart:
         ApplyOn: None
       Events:
