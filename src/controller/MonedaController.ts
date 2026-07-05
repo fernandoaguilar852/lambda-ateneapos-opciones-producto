@@ -4,6 +4,7 @@ import { IMonedaBL } from '../domain/IMonedaBL';
 import { MonedaRequestDTO } from '../repositories/dtos/MonedaDTO';
 import { SwaggerResponseBuilder } from '../core/common/SwaggerResponseBuilder';
 import { ValidationError, NotFoundError, ConflictError } from '../domain/MonedaBL';
+import { DatabaseError, DatabaseConnectionError } from '../domain/exceptions/CustomExceptions';
 import { ALLOWED_HEADERS_VALUES } from '../core/utils/Constans';
 
 export class MonedaController implements IMonedaController {
@@ -246,6 +247,54 @@ export class MonedaController implements IMonedaController {
 
       return {
         statusCode: 409,
+        headers: this.getCorsHeaders(),
+        body: JSON.stringify(response)
+      };
+    }
+
+    if (error instanceof DatabaseConnectionError) {
+      // 503 SERVICE UNAVAILABLE
+      const errorDetail = error.code
+        ? `${error.message} (Código PG: ${error.code})`
+        : error.message;
+
+      const errors = [
+        SwaggerResponseBuilder.buildErrorItem('E004', errorDetail)
+      ];
+
+      const response = SwaggerResponseBuilder.buildErrorResponse(
+        503,
+        errors,
+        messageUuid,
+        requestAppId
+      );
+
+      return {
+        statusCode: 503,
+        headers: this.getCorsHeaders(),
+        body: JSON.stringify(response)
+      };
+    }
+
+    if (error instanceof DatabaseError) {
+      // 500 INTERNAL SERVER ERROR (error de base de datos)
+      const errorDetail = error.code
+        ? `${error.message} (Código PG: ${error.code})`
+        : error.message;
+
+      const errors = [
+        SwaggerResponseBuilder.buildErrorItem('E005', errorDetail)
+      ];
+
+      const response = SwaggerResponseBuilder.buildErrorResponse(
+        500,
+        errors,
+        messageUuid,
+        requestAppId
+      );
+
+      return {
+        statusCode: 500,
         headers: this.getCorsHeaders(),
         body: JSON.stringify(response)
       };

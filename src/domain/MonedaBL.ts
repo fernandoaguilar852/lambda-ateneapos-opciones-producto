@@ -3,28 +3,10 @@ import { IMonedaRepository } from '../repositories/IMonedaRepository';
 import { MonedaRequestDTO } from '../repositories/dtos/MonedaDTO';
 import { Moneda, MonedaListData } from './models/MonedaDomain';
 import { MonedaMapper } from './mappers/MonedaMapper';
+import { ValidationError, NotFoundError, ConflictError } from './exceptions/CustomExceptions';
 
-// Excepciones personalizadas
-export class ValidationError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'ValidationError';
-  }
-}
-
-export class NotFoundError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'NotFoundError';
-  }
-}
-
-export class ConflictError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'ConflictError';
-  }
-}
+// Re-exportar excepciones para compatibilidad con imports existentes
+export { ValidationError, NotFoundError, ConflictError };
 
 export class MonedaBL implements IMonedaBL {
 
