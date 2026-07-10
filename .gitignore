@@ -33,5 +33,3 @@ yarn-error.log*
 # Test coverage
 coverage/
 
-# SAM
-samconfig.toml

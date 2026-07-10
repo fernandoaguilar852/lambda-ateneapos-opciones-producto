@@ -1,7 +1,7 @@
 {
-  "name": "lambda-ateneaall-moneda",
+  "name": "lambda-ateneaall-iva",
   "version": "1.0.0",
-  "description": "Lambda para gestión de monedas - Sistema POS Atenea",
+  "description": "Lambda para gestión de IVA - Sistema POS Atenea",
   "main": "app.js",
   "scripts": {
     "build": "sam build",
@@ -10,11 +10,14 @@
     "test": "echo \"No tests specified\" && exit 0"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.71.2"
+    "@anthropic-ai/sdk": "^0.71.2",
+    "@aws-sdk/client-ssm": "^3.600.0",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "@types/node": "^20.12.7",
     "@types/aws-lambda": "^8.10.108",
+    "@types/jsonwebtoken": "^9.0.6",
     "esbuild": "^0.19.0",
     "typescript": "^5.0.0"
   }

@@ -1,32 +1,32 @@
 import { APIGatewayProxyResult } from 'aws-lambda';
-import { IMonedaController } from './IMonedaController';
-import { IMonedaBL } from '../domain/IMonedaBL';
-import { MonedaRequestDTO } from '../repositories/dtos/MonedaDTO';
+import { IIvaController } from './IIvaController';
+import { IIvaBL } from '../domain/IIvaBL';
+import { IvaRequestDTO, PatchIvaRequestDTO } from '../repositories/dtos/IvaDTO';
 import { SwaggerResponseBuilder } from '../core/common/SwaggerResponseBuilder';
-import { ValidationError, NotFoundError, ConflictError } from '../domain/MonedaBL';
+import { ValidationError, NotFoundError, ConflictError } from '../domain/IvaBL';
 import { DatabaseError, DatabaseConnectionError } from '../domain/exceptions/CustomExceptions';
 import { ALLOWED_HEADERS_VALUES } from '../core/utils/Constans';
 
-export class MonedaController implements IMonedaController {
+export class IvaController implements IIvaController {
 
-  constructor(private monedaBL: IMonedaBL) {}
+  constructor(private ivaBL: IIvaBL) {}
 
   /**
-   * POST /v1/pos/monedas - Crear moneda
+   * POST /v1/pos/ivas - Crear IVA
    */
-  async createMoneda(
-    data: MonedaRequestDTO,
+  async createIva(
+    data: IvaRequestDTO,
     messageUuid: string,
     requestAppId: string
   ): Promise<APIGatewayProxyResult> {
     try {
       // Llamar a la lógica de negocio
-      const moneda = await this.monedaBL.createMoneda(data);
+      const iva = await this.ivaBL.createIva(data);
 
       // Construir respuesta exitosa (201 CREATED)
       const response = SwaggerResponseBuilder.buildSuccessResponse(
         201,
-        moneda,
+        iva,
         messageUuid,
         requestAppId,
         '0000',
@@ -46,21 +46,21 @@ export class MonedaController implements IMonedaController {
   }
 
   /**
-   * GET /v1/pos/monedas/{monedaId} - Consultar moneda por ID
+   * GET /v1/pos/ivas/{ivaId} - Consultar IVA por ID
    */
-  async getMonedaById(
-    monedaId: number,
+  async getIvaById(
+    ivaId: number,
     messageUuid: string,
     requestAppId: string
   ): Promise<APIGatewayProxyResult> {
     try {
       // Llamar a la lógica de negocio
-      const moneda = await this.monedaBL.getMonedaById(monedaId);
+      const iva = await this.ivaBL.getIvaById(ivaId);
 
       // Construir respuesta exitosa (200 OK)
       const response = SwaggerResponseBuilder.buildSuccessResponse(
         200,
-        moneda,
+        iva,
         messageUuid,
         requestAppId
       );
@@ -77,9 +77,9 @@ export class MonedaController implements IMonedaController {
   }
 
   /**
-   * GET /v1/pos/monedas - Listar monedas con paginación
+   * GET /v1/pos/ivas - Listar IVAs con paginación
    */
-  async listAllMonedas(
+  async listAllIvas(
     messageUuid: string,
     requestAppId: string,
     pageSize?: number,
@@ -87,7 +87,7 @@ export class MonedaController implements IMonedaController {
   ): Promise<APIGatewayProxyResult> {
     try {
       // Llamar a la lógica de negocio con parámetros de paginación
-      const result = await this.monedaBL.listAllMonedas(pageSize, pageNumber);
+      const result = await this.ivaBL.listAllIvas(pageSize, pageNumber);
 
       // Extraer paginación del resultado
       const { pagination, ...data } = result;
@@ -116,22 +116,22 @@ export class MonedaController implements IMonedaController {
   }
 
   /**
-   * PUT /v1/pos/monedas/{monedaId} - Actualizar moneda
+   * PUT /v1/pos/ivas/{ivaId} - Actualizar IVA (completo)
    */
-  async updateMoneda(
-    monedaId: number,
-    data: MonedaRequestDTO,
+  async updateIva(
+    ivaId: number,
+    data: IvaRequestDTO,
     messageUuid: string,
     requestAppId: string
   ): Promise<APIGatewayProxyResult> {
     try {
       // Llamar a la lógica de negocio
-      const moneda = await this.monedaBL.updateMoneda(monedaId, data);
+      const iva = await this.ivaBL.updateIva(ivaId, data);
 
       // Construir respuesta exitosa (200 OK)
       const response = SwaggerResponseBuilder.buildSuccessResponse(
         200,
-        moneda,
+        iva,
         messageUuid,
         requestAppId
       );
@@ -148,21 +148,53 @@ export class MonedaController implements IMonedaController {
   }
 
   /**
-   * DELETE /v1/pos/monedas/{monedaId} - Eliminar moneda
+   * PATCH /v1/pos/ivas/{ivaId} - Actualizar IVA (parcial)
    */
-  async deleteMoneda(
-    monedaId: number,
+  async patchIva(
+    ivaId: number,
+    data: PatchIvaRequestDTO,
+    messageUuid: string,
+    requestAppId: string
+  ): Promise<APIGatewayProxyResult> {
+    try {
+      // Llamar a la lógica de negocio
+      const iva = await this.ivaBL.patchIva(ivaId, data);
+
+      // Construir respuesta exitosa (200 OK)
+      const response = SwaggerResponseBuilder.buildSuccessResponse(
+        200,
+        iva,
+        messageUuid,
+        requestAppId
+      );
+
+      return {
+        statusCode: 200,
+        headers: this.getCorsHeaders(),
+        body: JSON.stringify(response)
+      };
+
+    } catch (error: any) {
+      return this.handleError(error, messageUuid, requestAppId);
+    }
+  }
+
+  /**
+   * DELETE /v1/pos/ivas/{ivaId} - Eliminar IVA
+   */
+  async deleteIva(
+    ivaId: number,
     messageUuid: string,
     requestAppId: string
   ): Promise<APIGatewayProxyResult> {
     try {
       // Llamar a la lógica de negocio (retorna la data eliminada)
-      const moneda = await this.monedaBL.deleteMoneda(monedaId);
+      const iva = await this.ivaBL.deleteIva(ivaId);
 
       // Construir respuesta exitosa (200 OK) con la data eliminada
       const response = SwaggerResponseBuilder.buildSuccessResponse(
         200,
-        moneda,
+        iva,
         messageUuid,
         requestAppId,
         '0000',
@@ -189,7 +221,7 @@ export class MonedaController implements IMonedaController {
     messageUuid: string,
     requestAppId: string
   ): APIGatewayProxyResult {
-    console.error('Error in MonedaController:', error);
+    console.error('Error in IvaController:', error);
 
     // Determinar el tipo de error y construir respuesta apropiada
     if (error instanceof ValidationError) {

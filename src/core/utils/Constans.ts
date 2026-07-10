@@ -79,60 +79,71 @@ export const enum Message {
 export const ERROR_QUERY_EXCEPTION_MESSAGE = 'The database query has fail';
 
 // ===========================
-// QUERIES MONEDA (PostgreSQL)
+// QUERIES IVA (PostgreSQL)
 // ===========================
 export enum QUERIES {
-    CREATE_MONEDA = `
-        INSERT INTO moneda (codigo_iso, nombre, simbolo, decimales, activo)
-        VALUES ($1, $2, $3, $4, $5)
-        RETURNING moneda_id, codigo_iso, nombre, simbolo, decimales, activo
+    CREATE_IVA = `
+        INSERT INTO iva (descripcion, valor, activo)
+        VALUES ($1, $2, $3)
+        RETURNING iva_id, descripcion, valor, activo
     `,
 
-    GET_MONEDA_BY_ID = `
-        SELECT moneda_id, codigo_iso, nombre, simbolo, decimales, activo
-        FROM moneda
-        WHERE moneda_id = $1
+    GET_IVA_BY_ID = `
+        SELECT iva_id, descripcion, valor, activo
+        FROM iva
+        WHERE iva_id = $1
     `,
 
-    LIST_ALL_MONEDAS = `
-        SELECT moneda_id, codigo_iso, nombre, simbolo, decimales, activo
-        FROM moneda
-        ORDER BY moneda_id
+    LIST_ALL_IVAS = `
+        SELECT iva_id, descripcion, valor, activo
+        FROM iva
+        WHERE activo = true
+        ORDER BY iva_id
     `,
 
-    COUNT_ALL_MONEDAS = `
+    COUNT_ALL_IVAS = `
         SELECT COUNT(*) as count
-        FROM moneda
+        FROM iva
+        WHERE activo = true
     `,
 
-    LIST_MONEDAS_PAGINATED = `
-        SELECT moneda_id, codigo_iso, nombre, simbolo, decimales, activo
-        FROM moneda
-        ORDER BY moneda_id
+    LIST_IVAS_PAGINATED = `
+        SELECT iva_id, descripcion, valor, activo
+        FROM iva
+        WHERE activo = true
+        ORDER BY iva_id
         LIMIT $1 OFFSET $2
     `,
 
-    UPDATE_MONEDA = `
-        UPDATE moneda
-        SET codigo_iso = $1,
-            nombre = $2,
-            simbolo = $3,
-            decimales = $4,
-            activo = $5
-        WHERE moneda_id = $6
-        RETURNING moneda_id, codigo_iso, nombre, simbolo, decimales, activo
+    UPDATE_IVA = `
+        UPDATE iva
+        SET descripcion = $1,
+            valor = $2,
+            activo = $3
+        WHERE iva_id = $4
+        RETURNING iva_id, descripcion, valor, activo
     `,
 
-    DELETE_MONEDA = `
-        DELETE FROM moneda
-        WHERE moneda_id = $1
-        RETURNING moneda_id, codigo_iso, nombre, simbolo, decimales, activo
+    PATCH_IVA = `
+        UPDATE iva
+        SET descripcion = COALESCE($1, descripcion),
+            valor = COALESCE($2, valor),
+            activo = COALESCE($3, activo)
+        WHERE iva_id = $4
+        RETURNING iva_id, descripcion, valor, activo
     `,
 
-    CHECK_MONEDA_EXISTS_BY_ISO = `
+    DELETE_IVA = `
+        UPDATE iva
+        SET activo = false
+        WHERE iva_id = $1
+        RETURNING iva_id, descripcion, valor, activo
+    `,
+
+    CHECK_IVA_EXISTS_BY_DESCRIPCION = `
         SELECT COUNT(*) as count
-        FROM moneda
-        WHERE codigo_iso = $1 AND moneda_id != $2
+        FROM iva
+        WHERE descripcion = $1 AND iva_id != $2
     `,
 }
 
