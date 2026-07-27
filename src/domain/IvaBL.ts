@@ -55,7 +55,16 @@ export class IvaBL implements IIvaBL {
   /**
    * Listar todos los IVAs con paginación
    */
-  async listAllIvas(pageSize: number = 10, pageNumber: number = 1): Promise<IvaListData> {
+  async listAllIvas(pageSize: number, pageNumber: number): Promise<IvaListData> {
+    // Validar que los parámetros sean requeridos
+    if (pageSize === undefined || pageSize === null) {
+      throw new ValidationError('El parámetro pageSize es requerido');
+    }
+
+    if (pageNumber === undefined || pageNumber === null) {
+      throw new ValidationError('El parámetro pageNumber es requerido');
+    }
+
     // Validar parámetros de paginación
     if (pageSize <= 0 || pageSize > 100) {
       throw new ValidationError('El pageSize debe estar entre 1 y 100');

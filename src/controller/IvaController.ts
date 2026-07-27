@@ -82,8 +82,8 @@ export class IvaController implements IIvaController {
   async listAllIvas(
     messageUuid: string,
     requestAppId: string,
-    pageSize?: number,
-    pageNumber?: number
+    pageSize: number,
+    pageNumber: number
   ): Promise<APIGatewayProxyResult> {
     try {
       // Llamar a la lógica de negocio con parámetros de paginación

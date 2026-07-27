@@ -115,14 +115,37 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent, context: Contex
 
         // GET /v1/pos/ivas - Listar todos los IVAs con paginación
         if (method === 'GET' && path === '/v1/pos/ivas') {
-            // Extraer parámetros de paginación de query string
-            const pageSize = event.queryStringParameters?.pageSize
-                ? parseInt(event.queryStringParameters.pageSize)
-                : 10; // Valor por defecto: 10
+            // Validar que los parámetros de paginación sean requeridos
+            if (!event.queryStringParameters?.pageSize || !event.queryStringParameters?.pageNumber) {
+                const errors = [
+                    SwaggerResponseBuilder.buildErrorItem(
+                        'E001',
+                        'Los parámetros pageSize y pageNumber son requeridos'
+                    )
+                ];
 
-            const pageNumber = event.queryStringParameters?.pageNumber
-                ? parseInt(event.queryStringParameters.pageNumber)
-                : 1; // Valor por defecto: 1
+                const errorResponse = SwaggerResponseBuilder.buildErrorResponse(
+                    400,
+                    errors,
+                    messageUuid,
+                    requestAppId
+                );
+
+                return {
+                    statusCode: 400,
+                    headers: {
+                        'Content-Type': ALLOWED_HEADERS_VALUES.CONTENT_TYPE,
+                        'Access-Control-Allow-Headers': ALLOWED_HEADERS_VALUES.ALLOWED_HEADERS,
+                        'Access-Control-Allow-Origin': ALLOWED_HEADERS_VALUES.ALLOW_ORIGIN,
+                        'Access-Control-Allow-Methods': ALLOWED_HEADERS_VALUES.ALLOWED_METHODS,
+                    },
+                    body: JSON.stringify(errorResponse)
+                };
+            }
+
+            // Extraer parámetros de paginación de query string
+            const pageSize = parseInt(event.queryStringParameters.pageSize);
+            const pageNumber = parseInt(event.queryStringParameters.pageNumber);
 
             return await ivaController.listAllIvas(messageUuid, requestAppId, pageSize, pageNumber);
         }

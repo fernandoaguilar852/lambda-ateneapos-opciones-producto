@@ -175,16 +175,19 @@ curl -X POST http://127.0.0.1:3000/v1/pos/ivas \
 
 **NOTA:** El listado solo retorna IVAs con `activo = true`. Los IVAs eliminados (soft delete) no aparecen.
 
-**Sin paginación (usa valores por defecto: pageSize=10, pageNumber=1):**
+**IMPORTANTE:** Los parámetros `pageSize` y `pageNumber` son **REQUERIDOS** en el query string.
+
 ```bash
-curl -X GET http://127.0.0.1:3000/v1/pos/ivas \
+curl -X GET "http://127.0.0.1:3000/v1/pos/ivas?pageSize=10&pageNumber=1" \
+  -H "Authorization: Bearer <TU_TOKEN_JWT_AQUI>" \
   -H "message-uuid: c4e6bd04-5149-11e7-b114-a2f933d5fe66" \
   -H "request-app-id: acxff62e-6f12-42de-9012-1e7304418abd"
 ```
 
-**Con paginación personalizada:**
+**Ejemplo con paginación personalizada:**
 ```bash
-curl -X GET "http://127.0.0.1:3000/v1/pos/ivas?pageSize=5&pageNumber=1" \
+curl -X GET "http://127.0.0.1:3000/v1/pos/ivas?pageSize=5&pageNumber=2" \
+  -H "Authorization: Bearer <TU_TOKEN_JWT_AQUI>" \
   -H "message-uuid: c4e6bd04-5149-11e7-b114-a2f933d5fe66" \
   -H "request-app-id: acxff62e-6f12-42de-9012-1e7304418abd"
 ```
@@ -452,6 +455,26 @@ curl -X DELETE http://127.0.0.1:3000/v1/pos/ivas/1 \
 
 ## Testing de Validaciones (Errores)
 
+### Error 400 - Parámetros de paginación faltantes
+```bash
+curl -X GET "http://127.0.0.1:3000/v1/pos/ivas" \
+  -H "Authorization: Bearer <TU_TOKEN_JWT_AQUI>" \
+  -H "message-uuid: c4e6bd04-5149-11e7-b114-a2f933d5fe66" \
+  -H "request-app-id: acxff62e-6f12-42de-9012-1e7304418abd"
+```
+
+**Respuesta esperada (400 BAD REQUEST):**
+```json
+{
+  "errors": [
+    {
+      "errorCode": "E001",
+      "errorDetail": "Los parámetros pageSize y pageNumber son requeridos"
+    }
+  ]
+}
+```
+
 ### Error 400 - Descripción vacía
 ```bash
 curl -X POST http://127.0.0.1:3000/v1/pos/ivas \
@@ -663,8 +686,9 @@ curl -X POST http://127.0.0.1:3000/v1/pos/ivas \
   -H "request-app-id: test-app-001" \
   -d '{"descripcion": "IVA Excluido", "valor": 0.00, "activo": false}'
 
-# 2. Listar todos
-curl -X GET http://127.0.0.1:3000/v1/pos/ivas \
+# 2. Listar todos (con parámetros de paginación requeridos)
+curl -X GET "http://127.0.0.1:3000/v1/pos/ivas?pageSize=10&pageNumber=1" \
+  -H "Authorization: Bearer <TU_TOKEN_JWT_AQUI>" \
   -H "message-uuid: test-uuid-004" \
   -H "request-app-id: test-app-001"
 
@@ -703,7 +727,8 @@ curl -X GET http://127.0.0.1:3000/v1/pos/ivas/1 \
   -H "request-app-id: test-app-001"
 
 # 9. Verificar que NO aparece en el listado
-curl -X GET http://127.0.0.1:3000/v1/pos/ivas \
+curl -X GET "http://127.0.0.1:3000/v1/pos/ivas?pageSize=10&pageNumber=1" \
+  -H "Authorization: Bearer <TU_TOKEN_JWT_AQUI>" \
   -H "message-uuid: test-uuid-011" \
   -H "request-app-id: test-app-001"
 ```
@@ -732,15 +757,21 @@ curl -X GET http://127.0.0.1:3000/v1/pos/ivas \
    - **PUT**: Actualización completa - requiere todos los campos
    - **PATCH**: Actualización parcial - solo los campos que quieras cambiar
 
-6. **Validaciones del valor:**
+6. **Parámetros de paginación:**
+   - Los parámetros `pageSize` y `pageNumber` son **REQUERIDOS** en el endpoint GET /v1/pos/ivas
+   - pageSize: debe estar entre 1 y 100
+   - pageNumber: debe ser mayor a 0
+   - Si no se envían, se retorna error 400
+
+7. **Validaciones del valor:**
    - Debe ser un número entre 0 y 100
    - Acepta decimales (ej: 19.50, 5.25, 0.00)
 
-7. **Descripción única:**
+8. **Descripción única:**
    - No se pueden crear dos IVAs con la misma descripción
    - Esta validación también aplica en actualizaciones
 
-8. **Eliminación lógica (Soft Delete):**
+9. **Eliminación lógica (Soft Delete):**
    - El DELETE no borra físicamente el registro de la base de datos
    - Marca el campo `activo = false` en el IVA
    - El IVA eliminado sigue siendo consultable con GET por ID
