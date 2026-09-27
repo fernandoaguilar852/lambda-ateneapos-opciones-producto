@@ -12,6 +12,10 @@ import { OpcionController } from './controller/OpcionController';
 import { OpcionBL } from './domain/OpcionBL';
 import { OpcionRepository } from './repositories/OpcionRepository';
 import { OpcionRequestDTO, UpdateOpcionRequestDTO } from './repositories/dtos/OpcionDTO';
+import { OpcionRecetaController } from './controller/OpcionRecetaController';
+import { OpcionRecetaBL } from './domain/OpcionRecetaBL';
+import { OpcionRecetaRepository } from './repositories/OpcionRecetaRepository';
+import { OpcionRecetaRequestDTO, UpdateOpcionRecetaRequestDTO } from './repositories/dtos/OpcionRecetaDTO';
 import { SwaggerResponseBuilder } from './core/common/SwaggerResponseBuilder';
 import { authenticateRequest } from './auth/AuthMiddleware';
 
@@ -130,6 +134,15 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent, context: Contex
         const opcionController = new OpcionController(
             new OpcionBL(
                 new OpcionRepository()
+            )
+        );
+
+        // ========== ENDPOINTS DE RECETAS DE OPCIONES ==========
+
+        // Instanciar controller de Recetas con DI
+        const opcionRecetaController = new OpcionRecetaController(
+            new OpcionRecetaBL(
+                new OpcionRecetaRepository()
             )
         );
 
@@ -272,6 +285,37 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent, context: Contex
         if (method === 'DELETE' && path.match(/^\/v1\/pos\/opciones\/\d+$/)) {
             const opcionId = parseInt(event.pathParameters?.opcionId || '0');
             return await opcionController.deleteOpcion(opcionId, clienteId, messageUuid, requestAppId);
+        }
+
+        // ========== ENDPOINTS DE RECETAS DE OPCIONES ==========
+
+        // POST /v1/pos/opciones/{opcionId}/receta - Agregar insumo a receta
+        if (method === 'POST' && path.match(/^\/v1\/pos\/opciones\/\d+\/receta$/)) {
+            const opcionId = parseInt(event.pathParameters?.opcionId || '0');
+            const body: OpcionRecetaRequestDTO = JSON.parse(event.body || '{}');
+            body.opcionId = opcionId; // Asegurar que el opcionId del path se usa
+            return await opcionRecetaController.createOpcionReceta(clienteId, body, messageUuid, requestAppId);
+        }
+
+        // GET /v1/pos/opciones/{opcionId}/receta - Obtener receta completa
+        if (method === 'GET' && path.match(/^\/v1\/pos\/opciones\/\d+\/receta$/)) {
+            const opcionId = parseInt(event.pathParameters?.opcionId || '0');
+            return await opcionRecetaController.getRecetaByOpcion(clienteId, opcionId, messageUuid, requestAppId);
+        }
+
+        // PUT /v1/pos/opciones/{opcionId}/receta/{insumoId} - Actualizar insumo
+        if (method === 'PUT' && path.match(/^\/v1\/pos\/opciones\/\d+\/receta\/\d+$/)) {
+            const opcionId = parseInt(event.pathParameters?.opcionId || '0');
+            const insumoId = parseInt(event.pathParameters?.insumoId || '0');
+            const body: UpdateOpcionRecetaRequestDTO = JSON.parse(event.body || '{}');
+            return await opcionRecetaController.updateOpcionReceta(opcionId, insumoId, clienteId, body, messageUuid, requestAppId);
+        }
+
+        // DELETE /v1/pos/opciones/{opcionId}/receta/{insumoId} - Eliminar insumo
+        if (method === 'DELETE' && path.match(/^\/v1\/pos\/opciones\/\d+\/receta\/\d+$/)) {
+            const opcionId = parseInt(event.pathParameters?.opcionId || '0');
+            const insumoId = parseInt(event.pathParameters?.insumoId || '0');
+            return await opcionRecetaController.deleteOpcionReceta(opcionId, insumoId, clienteId, messageUuid, requestAppId);
         }
 
         // Si no coincide con ninguna ruta

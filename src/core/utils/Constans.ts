@@ -255,6 +255,54 @@ export enum QUERIES {
         RETURNING opcion_id, grupo_opcion_id, cliente_id, nombre,
                   precio_adicional, por_defecto, orden, activo, created_at
     `,
+
+    // ===========================
+    // RECETAS DE OPCIONES
+    // ===========================
+
+    CREATE_OPCION_RECETA = `
+        INSERT INTO producto_opcion_receta (
+            cliente_id, opcion_id, insumo_id,
+            cantidad_base, merma_pct, activo
+        )
+        VALUES ($1, $2, $3, $4, $5, true)
+        RETURNING opcion_receta_id, cliente_id, opcion_id, insumo_id,
+                  cantidad_base, merma_pct, activo, created_at
+    `,
+
+    GET_RECETA_BY_OPCION = `
+        SELECT
+            por.opcion_receta_id,
+            por.cliente_id,
+            por.opcion_id,
+            por.insumo_id,
+            por.cantidad_base,
+            por.merma_pct,
+            por.activo,
+            por.created_at,
+            i.nombre as insumo_nombre
+        FROM producto_opcion_receta por
+        LEFT JOIN insumo i ON por.insumo_id = i.insumo_id
+        WHERE por.cliente_id = $1 AND por.opcion_id = $2 AND por.activo = true
+        ORDER BY por.opcion_receta_id ASC
+    `,
+
+    UPDATE_OPCION_RECETA = `
+        UPDATE producto_opcion_receta
+        SET cantidad_base = $1,
+            merma_pct = $2
+        WHERE opcion_id = $3 AND insumo_id = $4 AND cliente_id = $5 AND activo = true
+        RETURNING opcion_receta_id, cliente_id, opcion_id, insumo_id,
+                  cantidad_base, merma_pct, activo, created_at
+    `,
+
+    DELETE_OPCION_RECETA = `
+        UPDATE producto_opcion_receta
+        SET activo = false
+        WHERE opcion_id = $1 AND insumo_id = $2 AND cliente_id = $3 AND activo = true
+        RETURNING opcion_receta_id, cliente_id, opcion_id, insumo_id,
+                  cantidad_base, merma_pct, activo, created_at
+    `,
 }
 
 // ===========================

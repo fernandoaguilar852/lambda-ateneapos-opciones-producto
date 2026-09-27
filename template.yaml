@@ -147,6 +147,28 @@ Resources:
           Properties:
             Path: /v1/pos/opciones/{opcionId}
             Method: DELETE
+
+        # ========== RECETAS DE OPCIONES ==========
+        CreateOpcionReceta:
+          Type: Api
+          Properties:
+            Path: /v1/pos/opciones/{opcionId}/receta
+            Method: POST
+        GetRecetaByOpcion:
+          Type: Api
+          Properties:
+            Path: /v1/pos/opciones/{opcionId}/receta
+            Method: GET
+        UpdateOpcionReceta:
+          Type: Api
+          Properties:
+            Path: /v1/pos/opciones/{opcionId}/receta/{insumoId}
+            Method: PUT
+        DeleteOpcionReceta:
+          Type: Api
+          Properties:
+            Path: /v1/pos/opciones/{opcionId}/receta/{insumoId}
+            Method: DELETE
     Metadata:
       BuildMethod: esbuild
       BuildProperties:
