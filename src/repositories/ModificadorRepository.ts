@@ -1,6 +1,6 @@
 import { IModificadorRepository } from './IModificadorRepository';
 import { ModificadorDTO, ModificadorRequestDTO, UpdateModificadorRequestDTO } from './dtos/ModificadorDTO';
-import { getPool } from '../core/config/Database';
+import { mysqlClient } from '../core/utils/DatabaseManager';
 import { QUERIES } from '../core/utils/Constans';
 import { PostgresErrorHandler } from '../core/utils/PostgresErrorHandler';
 
@@ -11,8 +11,7 @@ export class ModificadorRepository implements IModificadorRepository {
    */
   async createModificador(clienteId: number, data: ModificadorRequestDTO): Promise<ModificadorDTO> {
     try {
-      const pool = await getPool();
-      const result = await pool.query(
+      const result = await mysqlClient.query(
         QUERIES.CREATE_MODIFICADOR,
         [
           clienteId,
@@ -36,8 +35,7 @@ export class ModificadorRepository implements IModificadorRepository {
    */
   async listModificadoresByProducto(clienteId: number, productoId: number): Promise<ModificadorDTO[]> {
     try {
-      const pool = await getPool();
-      const result = await pool.query(
+      const result = await mysqlClient.query(
         QUERIES.LIST_MODIFICADORES_BY_PRODUCTO,
         [clienteId, productoId]
       );
@@ -53,8 +51,7 @@ export class ModificadorRepository implements IModificadorRepository {
    */
   async listModificadoresGlobales(clienteId: number): Promise<ModificadorDTO[]> {
     try {
-      const pool = await getPool();
-      const result = await pool.query(
+      const result = await mysqlClient.query(
         QUERIES.LIST_MODIFICADORES_GLOBALES,
         [clienteId]
       );
@@ -74,10 +71,8 @@ export class ModificadorRepository implements IModificadorRepository {
     data: UpdateModificadorRequestDTO
   ): Promise<ModificadorDTO | null> {
     try {
-      const pool = await getPool();
-
       // Primero obtener el modificador actual para tener los valores actuales
-      const current = await pool.query(
+      const current = await mysqlClient.query(
         `SELECT tipo, nombre, descripcion, precio_adicional, orden
          FROM producto_modificador_predefinido
          WHERE modificador_id = $1 AND cliente_id = $2 AND activo = true`,
@@ -91,7 +86,7 @@ export class ModificadorRepository implements IModificadorRepository {
       const currentData = current.rows[0];
 
       // Actualizar con valores nuevos o mantener los actuales
-      const result = await pool.query(
+      const result = await mysqlClient.query(
         QUERIES.UPDATE_MODIFICADOR,
         [
           data.tipo ?? currentData.tipo,
@@ -119,8 +114,7 @@ export class ModificadorRepository implements IModificadorRepository {
    */
   async deleteModificador(modificadorId: number, clienteId: number): Promise<ModificadorDTO | null> {
     try {
-      const pool = await getPool();
-      const result = await pool.query(
+      const result = await mysqlClient.query(
         QUERIES.DELETE_MODIFICADOR,
         [modificadorId, clienteId]
       );

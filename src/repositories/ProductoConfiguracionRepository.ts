@@ -7,7 +7,7 @@ import {
   RecetaInsumoDTO,
   ModificadorProductoDTO
 } from './dtos/ProductoConfiguracionDTO';
-import { getPool } from '../core/config/Database';
+import { mysqlClient } from '../core/utils/DatabaseManager';
 import { QUERIES } from '../core/utils/Constans';
 import { PostgresErrorHandler } from '../core/utils/PostgresErrorHandler';
 
@@ -19,10 +19,8 @@ export class ProductoConfiguracionRepository implements IProductoConfiguracionRe
    */
   async getConfiguracionCompleta(productoId: number, clienteId: number): Promise<ProductoConfiguracionCompletaDTO | null> {
     try {
-      const pool = await getPool();
-
       // 1. Obtener datos básicos del producto
-      const productoResult = await pool.query(QUERIES.GET_PRODUCTO_BY_ID, [productoId, clienteId]);
+      const productoResult = await mysqlClient.query(QUERIES.GET_PRODUCTO_BY_ID, [productoId, clienteId]);
 
       if (productoResult.rows.length === 0) {
         return null; // Producto no encontrado
@@ -31,7 +29,7 @@ export class ProductoConfiguracionRepository implements IProductoConfiguracionRe
       const producto: ProductoDTO = productoResult.rows[0];
 
       // 2. Obtener grupos de opciones del producto
-      const gruposResult = await pool.query(QUERIES.LIST_GRUPOS_BY_PRODUCTO, [clienteId, productoId]);
+      const gruposResult = await mysqlClient.query(QUERIES.LIST_GRUPOS_BY_PRODUCTO, [clienteId, productoId]);
       const grupos: GrupoOpcionCompletoDTO[] = [];
 
       // 3. Para cada grupo, obtener sus opciones
@@ -39,7 +37,7 @@ export class ProductoConfiguracionRepository implements IProductoConfiguracionRe
         const grupoOpcionId = grupoRow.grupo_opcion_id;
 
         // Obtener opciones del grupo
-        const opcionesResult = await pool.query(QUERIES.LIST_OPCIONES_BY_GRUPO, [clienteId, grupoOpcionId]);
+        const opcionesResult = await mysqlClient.query(QUERIES.LIST_OPCIONES_BY_GRUPO, [clienteId, grupoOpcionId]);
         const opciones: OpcionConRecetaDTO[] = [];
 
         // 4. Para cada opción, obtener su receta
@@ -47,7 +45,7 @@ export class ProductoConfiguracionRepository implements IProductoConfiguracionRe
           const opcionId = opcionRow.opcion_id;
 
           // Obtener receta de la opción
-          const recetaResult = await pool.query(QUERIES.GET_RECETA_BY_OPCION, [clienteId, opcionId]);
+          const recetaResult = await mysqlClient.query(QUERIES.GET_RECETA_BY_OPCION, [clienteId, opcionId]);
           const receta: RecetaInsumoDTO[] = recetaResult.rows.map(row => ({
             opcion_id: row.opcion_id,
             insumo_id: row.insumo_id,
@@ -90,7 +88,7 @@ export class ProductoConfiguracionRepository implements IProductoConfiguracionRe
       }
 
       // 5. Obtener modificadores (específicos + globales)
-      const modificadoresResult = await pool.query(
+      const modificadoresResult = await mysqlClient.query(
         QUERIES.GET_MODIFICADORES_BY_PRODUCTO_COMPLETO,
         [clienteId, productoId]
       );
