@@ -1,7 +1,7 @@
 {
-  "name": "lambda-ateneaall-iva",
+  "name": "lambda-ateneapos-opciones-producto",
   "version": "1.0.0",
-  "description": "Lambda para gestión de IVA - Sistema POS Atenea",
+  "description": "Lambda para gestión de Opciones de Producto - Sistema POS Atenea",
   "main": "app.js",
   "scripts": {
     "test": "echo \"No tests specified\" && exit 0"
