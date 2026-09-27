@@ -9,8 +9,8 @@ Resources:
       FunctionName: lambda-ateneapos-opciones-producto
       CodeUri: src/
       Description: 'Lambda para API REST de Opciones de Producto - Sistema POS Atenea'
-      MemorySize: 256
-      Timeout: 10
+      MemorySize: 512
+      Timeout: 30
       Handler: app.lambdaHandler
       Runtime: nodejs20.x
       Architectures:
@@ -98,27 +98,54 @@ Resources:
         CreateGrupoOpcion:
           Type: Api
           Properties:
-            Path: /v1/pos/admin/productos/{productoId}/grupos-opciones
+            Path: /v1/pos/productos/{productoId}/grupos-opciones
             Method: POST
         ListGruposOpcionesByProducto:
           Type: Api
           Properties:
-            Path: /v1/pos/admin/productos/{productoId}/grupos-opciones
+            Path: /v1/pos/productos/{productoId}/grupos-opciones
             Method: GET
         GetGrupoOpcion:
           Type: Api
           Properties:
-            Path: /v1/pos/admin/grupos-opciones/{grupoId}
+            Path: /v1/pos/grupos-opciones/{grupoId}
             Method: GET
         UpdateGrupoOpcion:
           Type: Api
           Properties:
-            Path: /v1/pos/admin/grupos-opciones/{grupoId}
+            Path: /v1/pos/grupos-opciones/{grupoId}
             Method: PUT
         DeleteGrupoOpcion:
           Type: Api
           Properties:
-            Path: /v1/pos/admin/grupos-opciones/{grupoId}
+            Path: /v1/pos/grupos-opciones/{grupoId}
+            Method: DELETE
+
+        # ========== OPCIONES ==========
+        CreateOpcion:
+          Type: Api
+          Properties:
+            Path: /v1/pos/grupos-opciones/{grupoId}/opciones
+            Method: POST
+        ListOpcionesByGrupo:
+          Type: Api
+          Properties:
+            Path: /v1/pos/grupos-opciones/{grupoId}/opciones
+            Method: GET
+        GetOpcion:
+          Type: Api
+          Properties:
+            Path: /v1/pos/opciones/{opcionId}
+            Method: GET
+        UpdateOpcion:
+          Type: Api
+          Properties:
+            Path: /v1/pos/opciones/{opcionId}
+            Method: PUT
+        DeleteOpcion:
+          Type: Api
+          Properties:
+            Path: /v1/pos/opciones/{opcionId}
             Method: DELETE
     Metadata:
       BuildMethod: esbuild

@@ -8,6 +8,10 @@ import { GrupoOpcionController } from './controller/GrupoOpcionController';
 import { GrupoOpcionBL } from './domain/GrupoOpcionBL';
 import { GrupoOpcionRepository } from './repositories/GrupoOpcionRepository';
 import { GrupoOpcionRequestDTO, UpdateGrupoOpcionRequestDTO } from './repositories/dtos/GrupoOpcionDTO';
+import { OpcionController } from './controller/OpcionController';
+import { OpcionBL } from './domain/OpcionBL';
+import { OpcionRepository } from './repositories/OpcionRepository';
+import { OpcionRequestDTO, UpdateOpcionRequestDTO } from './repositories/dtos/OpcionDTO';
 import { SwaggerResponseBuilder } from './core/common/SwaggerResponseBuilder';
 import { authenticateRequest } from './auth/AuthMiddleware';
 
@@ -120,6 +124,15 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent, context: Contex
             )
         );
 
+        // ========== ENDPOINTS DE OPCIONES ==========
+
+        // Instanciar controller de Opciones con DI
+        const opcionController = new OpcionController(
+            new OpcionBL(
+                new OpcionRepository()
+            )
+        );
+
         // POST /v1/pos/ivas - Crear IVA
         if (method === 'POST' && path === '/v1/pos/ivas') {
             const body: IvaRequestDTO = JSON.parse(event.body || '{}');
@@ -193,37 +206,72 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent, context: Contex
 
         const clienteId = userPayload.clienteId;
 
-        // POST /v1/pos/admin/productos/{productoId}/grupos-opciones - Crear grupo
-        if (method === 'POST' && path.match(/^\/v1\/pos\/admin\/productos\/\d+\/grupos-opciones$/)) {
+        // POST /v1/pos/productos/{productoId}/grupos-opciones - Crear grupo
+        if (method === 'POST' && path.match(/^\/v1\/pos\/productos\/\d+\/grupos-opciones$/)) {
             const productoId = parseInt(event.pathParameters?.productoId || '0');
             const body: GrupoOpcionRequestDTO = JSON.parse(event.body || '{}');
             body.productoId = productoId; // Asegurar que el productoId del path se usa
             return await grupoOpcionController.createGrupoOpcion(clienteId, body, messageUuid, requestAppId);
         }
 
-        // GET /v1/pos/admin/productos/{productoId}/grupos-opciones - Listar grupos por producto
-        if (method === 'GET' && path.match(/^\/v1\/pos\/admin\/productos\/\d+\/grupos-opciones$/)) {
+        // GET /v1/pos/productos/{productoId}/grupos-opciones - Listar grupos por producto
+        if (method === 'GET' && path.match(/^\/v1\/pos\/productos\/\d+\/grupos-opciones$/)) {
             const productoId = parseInt(event.pathParameters?.productoId || '0');
             return await grupoOpcionController.listGruposByProducto(clienteId, productoId, messageUuid, requestAppId);
         }
 
-        // GET /v1/pos/admin/grupos-opciones/{grupoId} - Obtener grupo por ID
-        if (method === 'GET' && path.match(/^\/v1\/pos\/admin\/grupos-opciones\/\d+$/)) {
+        // GET /v1/pos/grupos-opciones/{grupoId} - Obtener grupo por ID
+        if (method === 'GET' && path.match(/^\/v1\/pos\/grupos-opciones\/\d+$/)) {
             const grupoId = parseInt(event.pathParameters?.grupoId || '0');
             return await grupoOpcionController.getGrupoOpcionById(grupoId, clienteId, messageUuid, requestAppId);
         }
 
-        // PUT /v1/pos/admin/grupos-opciones/{grupoId} - Actualizar grupo
-        if (method === 'PUT' && path.match(/^\/v1\/pos\/admin\/grupos-opciones\/\d+$/)) {
+        // PUT /v1/pos/grupos-opciones/{grupoId} - Actualizar grupo
+        if (method === 'PUT' && path.match(/^\/v1\/pos\/grupos-opciones\/\d+$/)) {
             const grupoId = parseInt(event.pathParameters?.grupoId || '0');
             const body: UpdateGrupoOpcionRequestDTO = JSON.parse(event.body || '{}');
             return await grupoOpcionController.updateGrupoOpcion(grupoId, clienteId, body, messageUuid, requestAppId);
         }
 
-        // DELETE /v1/pos/admin/grupos-opciones/{grupoId} - Eliminar grupo
-        if (method === 'DELETE' && path.match(/^\/v1\/pos\/admin\/grupos-opciones\/\d+$/)) {
+        // DELETE /v1/pos/grupos-opciones/{grupoId} - Eliminar grupo
+        if (method === 'DELETE' && path.match(/^\/v1\/pos\/grupos-opciones\/\d+$/)) {
             const grupoId = parseInt(event.pathParameters?.grupoId || '0');
             return await grupoOpcionController.deleteGrupoOpcion(grupoId, clienteId, messageUuid, requestAppId);
+        }
+
+        // ========== ENDPOINTS DE OPCIONES ==========
+
+        // POST /v1/pos/grupos-opciones/{grupoId}/opciones - Crear opción
+        if (method === 'POST' && path.match(/^\/v1\/pos\/grupos-opciones\/\d+\/opciones$/)) {
+            const grupoId = parseInt(event.pathParameters?.grupoId || '0');
+            const body: OpcionRequestDTO = JSON.parse(event.body || '{}');
+            body.grupoOpcionId = grupoId; // Asegurar que el grupoId del path se usa
+            return await opcionController.createOpcion(clienteId, body, messageUuid, requestAppId);
+        }
+
+        // GET /v1/pos/grupos-opciones/{grupoId}/opciones - Listar opciones por grupo
+        if (method === 'GET' && path.match(/^\/v1\/pos\/grupos-opciones\/\d+\/opciones$/)) {
+            const grupoId = parseInt(event.pathParameters?.grupoId || '0');
+            return await opcionController.listOpcionesByGrupo(clienteId, grupoId, messageUuid, requestAppId);
+        }
+
+        // GET /v1/pos/opciones/{opcionId} - Obtener opción por ID
+        if (method === 'GET' && path.match(/^\/v1\/pos\/opciones\/\d+$/)) {
+            const opcionId = parseInt(event.pathParameters?.opcionId || '0');
+            return await opcionController.getOpcionById(opcionId, clienteId, messageUuid, requestAppId);
+        }
+
+        // PUT /v1/pos/opciones/{opcionId} - Actualizar opción
+        if (method === 'PUT' && path.match(/^\/v1\/pos\/opciones\/\d+$/)) {
+            const opcionId = parseInt(event.pathParameters?.opcionId || '0');
+            const body: UpdateOpcionRequestDTO = JSON.parse(event.body || '{}');
+            return await opcionController.updateOpcion(opcionId, clienteId, body, messageUuid, requestAppId);
+        }
+
+        // DELETE /v1/pos/opciones/{opcionId} - Eliminar opción
+        if (method === 'DELETE' && path.match(/^\/v1\/pos\/opciones\/\d+$/)) {
+            const opcionId = parseInt(event.pathParameters?.opcionId || '0');
+            return await opcionController.deleteOpcion(opcionId, clienteId, messageUuid, requestAppId);
         }
 
         // Si no coincide con ninguna ruta

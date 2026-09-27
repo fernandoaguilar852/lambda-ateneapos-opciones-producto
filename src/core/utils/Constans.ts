@@ -207,6 +207,54 @@ export enum QUERIES {
                   incluidos_en_precio, cobrar_adicionales, orden,
                   activo, created_at
     `,
+
+    // ===========================
+    // OPCIONES
+    // ===========================
+
+    CREATE_OPCION = `
+        INSERT INTO producto_opcion (
+            grupo_opcion_id, cliente_id, nombre,
+            precio_adicional, por_defecto, orden, activo
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, true)
+        RETURNING opcion_id, grupo_opcion_id, cliente_id, nombre,
+                  precio_adicional, por_defecto, orden, activo, created_at
+    `,
+
+    GET_OPCION_BY_ID = `
+        SELECT opcion_id, grupo_opcion_id, cliente_id, nombre,
+               precio_adicional, por_defecto, orden, activo, created_at
+        FROM producto_opcion
+        WHERE opcion_id = $1 AND cliente_id = $2 AND activo = true
+    `,
+
+    LIST_OPCIONES_BY_GRUPO = `
+        SELECT opcion_id, grupo_opcion_id, cliente_id, nombre,
+               precio_adicional, por_defecto, orden, activo, created_at
+        FROM producto_opcion
+        WHERE cliente_id = $1 AND grupo_opcion_id = $2 AND activo = true
+        ORDER BY orden ASC, opcion_id ASC
+    `,
+
+    UPDATE_OPCION = `
+        UPDATE producto_opcion
+        SET nombre = $1,
+            precio_adicional = $2,
+            por_defecto = $3,
+            orden = $4
+        WHERE opcion_id = $5 AND cliente_id = $6 AND activo = true
+        RETURNING opcion_id, grupo_opcion_id, cliente_id, nombre,
+                  precio_adicional, por_defecto, orden, activo, created_at
+    `,
+
+    DELETE_OPCION = `
+        UPDATE producto_opcion
+        SET activo = false
+        WHERE opcion_id = $1 AND cliente_id = $2 AND activo = true
+        RETURNING opcion_id, grupo_opcion_id, cliente_id, nombre,
+                  precio_adicional, por_defecto, orden, activo, created_at
+    `,
 }
 
 // ===========================
