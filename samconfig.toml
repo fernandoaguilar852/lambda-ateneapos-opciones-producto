@@ -1,8 +1,8 @@
 version = 0.1
 [default.deploy.parameters]
-stack_name = "lambda-ateneaall-iva-stack"
+stack_name = "lambda-ateneapos-opciones-producto-stack"
 resolve_s3 = true
-s3_prefix = "lambda-ateneaall-iva"
+s3_prefix = "lambda-ateneapos-opciones-producto"
 region = "us-east-1"
 confirm_changeset = true
 capabilities = "CAPABILITY_IAM"

@@ -145,6 +145,68 @@ export enum QUERIES {
         FROM iva
         WHERE descripcion = $1 AND iva_id != $2
     `,
+
+    // ===========================
+    // GRUPOS DE OPCIONES
+    // ===========================
+
+    CREATE_GRUPO_OPCION = `
+        INSERT INTO producto_grupo_opcion (
+            cliente_id, producto_id, nombre, obligatorio,
+            minimo_selecciones, maximo_selecciones, incluidos_en_precio,
+            cobrar_adicionales, orden, activo
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, true)
+        RETURNING grupo_opcion_id, cliente_id, producto_id, nombre,
+                  obligatorio, minimo_selecciones, maximo_selecciones,
+                  incluidos_en_precio, cobrar_adicionales, orden,
+                  activo, created_at
+    `,
+
+    GET_GRUPO_OPCION_BY_ID = `
+        SELECT grupo_opcion_id, cliente_id, producto_id, nombre,
+               obligatorio, minimo_selecciones, maximo_selecciones,
+               incluidos_en_precio, cobrar_adicionales, orden,
+               activo, created_at
+        FROM producto_grupo_opcion
+        WHERE grupo_opcion_id = $1 AND cliente_id = $2 AND activo = true
+    `,
+
+    LIST_GRUPOS_BY_PRODUCTO = `
+        SELECT grupo_opcion_id, cliente_id, producto_id, nombre,
+               obligatorio, minimo_selecciones, maximo_selecciones,
+               incluidos_en_precio, cobrar_adicionales, orden,
+               activo, created_at
+        FROM producto_grupo_opcion
+        WHERE cliente_id = $1 AND producto_id = $2 AND activo = true
+        ORDER BY orden ASC, grupo_opcion_id ASC
+    `,
+
+    UPDATE_GRUPO_OPCION = `
+        UPDATE producto_grupo_opcion
+        SET nombre = $1,
+            obligatorio = $2,
+            minimo_selecciones = $3,
+            maximo_selecciones = $4,
+            incluidos_en_precio = $5,
+            cobrar_adicionales = $6,
+            orden = $7
+        WHERE grupo_opcion_id = $8 AND cliente_id = $9 AND activo = true
+        RETURNING grupo_opcion_id, cliente_id, producto_id, nombre,
+                  obligatorio, minimo_selecciones, maximo_selecciones,
+                  incluidos_en_precio, cobrar_adicionales, orden,
+                  activo, created_at
+    `,
+
+    DELETE_GRUPO_OPCION = `
+        UPDATE producto_grupo_opcion
+        SET activo = false
+        WHERE grupo_opcion_id = $1 AND cliente_id = $2 AND activo = true
+        RETURNING grupo_opcion_id, cliente_id, producto_id, nombre,
+                  obligatorio, minimo_selecciones, maximo_selecciones,
+                  incluidos_en_precio, cobrar_adicionales, orden,
+                  activo, created_at
+    `,
 }
 
 // ===========================

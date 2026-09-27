@@ -7,7 +7,7 @@ export default {
             host: "db-atenea-pos.ctiw48myq04p.us-east-1.rds.amazonaws.com",
             user: "postgres",
             password: "KratosMilo123**",
-            database: "ateneaposall",
+            database: "ateneapos",
             port: 5432,
             ssl: {
                 rejectUnauthorized: false
@@ -17,7 +17,7 @@ export default {
             host: "db-atenea-pos.ctiw48myq04p.us-east-1.rds.amazonaws.com",
             user: "postgres",
             password: "KratosMilo123**",
-            database: "ateneaposall",
+            database: "ateneapos",
             port: 5432,
             ssl: {
                 rejectUnauthorized: false
@@ -27,7 +27,7 @@ export default {
             host: "db-atenea-pos.ctiw48myq04p.us-east-1.rds.amazonaws.com",
             user: "postgres",
             password: "KratosMilo123**",
-            database: "ateneaposall",
+            database: "ateneapos",
             port: 5432,
             ssl: {
                 rejectUnauthorized: false
