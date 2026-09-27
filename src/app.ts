@@ -1,9 +1,5 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
 import { ALLOWED_HEADERS_VALUES } from './core/utils/Constans';
-import { IvaController } from './controller/IvaController';
-import { IvaBL } from './domain/IvaBL';
-import { IvaRepository } from './repositories/IvaRepository';
-import { IvaRequestDTO, PatchIvaRequestDTO } from './repositories/dtos/IvaDTO';
 import { GrupoOpcionController } from './controller/GrupoOpcionController';
 import { GrupoOpcionBL } from './domain/GrupoOpcionBL';
 import { GrupoOpcionRepository } from './repositories/GrupoOpcionRepository';
@@ -16,12 +12,19 @@ import { OpcionRecetaController } from './controller/OpcionRecetaController';
 import { OpcionRecetaBL } from './domain/OpcionRecetaBL';
 import { OpcionRecetaRepository } from './repositories/OpcionRecetaRepository';
 import { OpcionRecetaRequestDTO, UpdateOpcionRecetaRequestDTO } from './repositories/dtos/OpcionRecetaDTO';
+import { ModificadorController } from './controller/ModificadorController';
+import { ModificadorBL } from './domain/ModificadorBL';
+import { ModificadorRepository } from './repositories/ModificadorRepository';
+import { ModificadorRequestDTO, UpdateModificadorRequestDTO } from './repositories/dtos/ModificadorDTO';
+import { ProductoConfiguracionController } from './controller/ProductoConfiguracionController';
+import { ProductoConfiguracionBL } from './domain/ProductoConfiguracionBL';
+import { ProductoConfiguracionRepository } from './repositories/ProductoConfiguracionRepository';
 import { SwaggerResponseBuilder } from './core/common/SwaggerResponseBuilder';
 import { authenticateRequest } from './auth/AuthMiddleware';
 
 /**
- * Lambda Handler para API de IVA
- * Maneja todos los endpoints CRUD de IVA siguiendo el contrato Swagger
+ * Lambda Handler para API de Opciones de Producto
+ * Maneja todos los endpoints CRUD de Grupos de Opciones, Opciones, Recetas y Modificadores
  * CON AUTENTICACIÓN JWT
  */
 export const lambdaHandler = async (event: APIGatewayProxyEvent, context: Context): Promise<APIGatewayProxyResult> => {
@@ -110,14 +113,8 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent, context: Contex
             roles: userPayload.roles
         });
 
-        // ========== ENDPOINTS DE IVA ==========
-
-        // Instanciar controller de IVA con DI
-        const ivaController = new IvaController(
-            new IvaBL(
-                new IvaRepository()
-            )
-        );
+        // Extraer clienteId del token
+        const clienteId = userPayload.clienteId;
 
         // ========== ENDPOINTS DE GRUPOS DE OPCIONES ==========
 
@@ -146,78 +143,25 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent, context: Contex
             )
         );
 
-        // POST /v1/pos/ivas - Crear IVA
-        if (method === 'POST' && path === '/v1/pos/ivas') {
-            const body: IvaRequestDTO = JSON.parse(event.body || '{}');
-            return await ivaController.createIva(body, messageUuid, requestAppId);
-        }
+        // ========== ENDPOINTS DE MODIFICADORES ==========
 
-        // GET /v1/pos/ivas - Listar todos los IVAs con paginación
-        if (method === 'GET' && path === '/v1/pos/ivas') {
-            // Validar que los parámetros de paginación sean requeridos
-            if (!event.queryStringParameters?.pageSize || !event.queryStringParameters?.pageNumber) {
-                const errors = [
-                    SwaggerResponseBuilder.buildErrorItem(
-                        'E001',
-                        'Los parámetros pageSize y pageNumber son requeridos'
-                    )
-                ];
+        // Instanciar controller de Modificadores con DI
+        const modificadorController = new ModificadorController(
+            new ModificadorBL(
+                new ModificadorRepository()
+            )
+        );
 
-                const errorResponse = SwaggerResponseBuilder.buildErrorResponse(
-                    400,
-                    errors,
-                    messageUuid,
-                    requestAppId
-                );
+        // ========== ENDPOINTS DE CONFIGURACIÓN COMPLETA ==========
 
-                return {
-                    statusCode: 400,
-                    headers: {
-                        'Content-Type': ALLOWED_HEADERS_VALUES.CONTENT_TYPE,
-                        'Access-Control-Allow-Headers': ALLOWED_HEADERS_VALUES.ALLOWED_HEADERS,
-                        'Access-Control-Allow-Origin': ALLOWED_HEADERS_VALUES.ALLOW_ORIGIN,
-                        'Access-Control-Allow-Methods': ALLOWED_HEADERS_VALUES.ALLOWED_METHODS,
-                    },
-                    body: JSON.stringify(errorResponse)
-                };
-            }
-
-            // Extraer parámetros de paginación de query string
-            const pageSize = parseInt(event.queryStringParameters.pageSize);
-            const pageNumber = parseInt(event.queryStringParameters.pageNumber);
-
-            return await ivaController.listAllIvas(messageUuid, requestAppId, pageSize, pageNumber);
-        }
-
-        // GET /v1/pos/ivas/{ivaId} - Consultar IVA por ID
-        if (method === 'GET' && path.match(/^\/v1\/pos\/ivas\/\d+$/)) {
-            const ivaId = parseInt(event.pathParameters?.ivaId || '0');
-            return await ivaController.getIvaById(ivaId, messageUuid, requestAppId);
-        }
-
-        // PUT /v1/pos/ivas/{ivaId} - Actualizar IVA (completo)
-        if (method === 'PUT' && path.match(/^\/v1\/pos\/ivas\/\d+$/)) {
-            const ivaId = parseInt(event.pathParameters?.ivaId || '0');
-            const body: IvaRequestDTO = JSON.parse(event.body || '{}');
-            return await ivaController.updateIva(ivaId, body, messageUuid, requestAppId);
-        }
-
-        // PATCH /v1/pos/ivas/{ivaId} - Actualizar IVA (parcial)
-        if (method === 'PATCH' && path.match(/^\/v1\/pos\/ivas\/\d+$/)) {
-            const ivaId = parseInt(event.pathParameters?.ivaId || '0');
-            const body: PatchIvaRequestDTO = JSON.parse(event.body || '{}');
-            return await ivaController.patchIva(ivaId, body, messageUuid, requestAppId);
-        }
-
-        // DELETE /v1/pos/ivas/{ivaId} - Eliminar IVA
-        if (method === 'DELETE' && path.match(/^\/v1\/pos\/ivas\/\d+$/)) {
-            const ivaId = parseInt(event.pathParameters?.ivaId || '0');
-            return await ivaController.deleteIva(ivaId, messageUuid, requestAppId);
-        }
+        // Instanciar controller de Configuración Completa con DI
+        const productoConfiguracionController = new ProductoConfiguracionController(
+            new ProductoConfiguracionBL(
+                new ProductoConfiguracionRepository()
+            )
+        );
 
         // ========== ENDPOINTS DE GRUPOS DE OPCIONES ==========
-
-        const clienteId = userPayload.clienteId;
 
         // POST /v1/pos/productos/{productoId}/grupos-opciones - Crear grupo
         if (method === 'POST' && path.match(/^\/v1\/pos\/productos\/\d+\/grupos-opciones$/)) {
@@ -316,6 +260,46 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent, context: Contex
             const opcionId = parseInt(event.pathParameters?.opcionId || '0');
             const insumoId = parseInt(event.pathParameters?.insumoId || '0');
             return await opcionRecetaController.deleteOpcionReceta(opcionId, insumoId, clienteId, messageUuid, requestAppId);
+        }
+
+        // ========== ENDPOINTS DE MODIFICADORES ==========
+
+        // POST /v1/pos/modificadores - Crear modificador
+        if (method === 'POST' && path === '/v1/pos/modificadores') {
+            const body: ModificadorRequestDTO = JSON.parse(event.body || '{}');
+            return await modificadorController.createModificador(clienteId, body, messageUuid, requestAppId);
+        }
+
+        // GET /v1/pos/productos/{productoId}/modificadores - Listar modificadores por producto
+        if (method === 'GET' && path.match(/^\/v1\/pos\/productos\/\d+\/modificadores$/)) {
+            const productoId = parseInt(event.pathParameters?.productoId || '0');
+            return await modificadorController.listModificadoresByProducto(clienteId, productoId, messageUuid, requestAppId);
+        }
+
+        // GET /v1/pos/modificadores/globales - Listar modificadores globales
+        if (method === 'GET' && path === '/v1/pos/modificadores/globales') {
+            return await modificadorController.listModificadoresGlobales(clienteId, messageUuid, requestAppId);
+        }
+
+        // PUT /v1/pos/modificadores/{modificadorId} - Actualizar modificador
+        if (method === 'PUT' && path.match(/^\/v1\/pos\/modificadores\/\d+$/)) {
+            const modificadorId = parseInt(event.pathParameters?.modificadorId || '0');
+            const body: UpdateModificadorRequestDTO = JSON.parse(event.body || '{}');
+            return await modificadorController.updateModificador(modificadorId, clienteId, body, messageUuid, requestAppId);
+        }
+
+        // DELETE /v1/pos/modificadores/{modificadorId} - Eliminar modificador
+        if (method === 'DELETE' && path.match(/^\/v1\/pos\/modificadores\/\d+$/)) {
+            const modificadorId = parseInt(event.pathParameters?.modificadorId || '0');
+            return await modificadorController.deleteModificador(modificadorId, clienteId, messageUuid, requestAppId);
+        }
+
+        // ========== ENDPOINTS DE CONFIGURACIÓN COMPLETA ==========
+
+        // GET /v1/pos/productos/{productoId}/configuracion-completa - Obtener configuración completa
+        if (method === 'GET' && path.match(/^\/v1\/pos\/productos\/\d+\/configuracion-completa$/)) {
+            const productoId = parseInt(event.pathParameters?.productoId || '0');
+            return await productoConfiguracionController.getConfiguracionCompleta(productoId, clienteId, messageUuid, requestAppId);
         }
 
         // Si no coincide con ninguna ruta

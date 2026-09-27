@@ -62,38 +62,6 @@ Resources:
       SnapStart:
         ApplyOn: None
       Events:
-        # ========== IVA ==========
-        CreateIva:
-          Type: Api
-          Properties:
-            Path: /v1/pos/ivas
-            Method: POST
-        ListIvas:
-          Type: Api
-          Properties:
-            Path: /v1/pos/ivas
-            Method: GET
-        GetIva:
-          Type: Api
-          Properties:
-            Path: /v1/pos/ivas/{ivaId}
-            Method: GET
-        UpdateIva:
-          Type: Api
-          Properties:
-            Path: /v1/pos/ivas/{ivaId}
-            Method: PUT
-        PatchIva:
-          Type: Api
-          Properties:
-            Path: /v1/pos/ivas/{ivaId}
-            Method: PATCH
-        DeleteIva:
-          Type: Api
-          Properties:
-            Path: /v1/pos/ivas/{ivaId}
-            Method: DELETE
-
         # ========== GRUPOS DE OPCIONES ==========
         CreateGrupoOpcion:
           Type: Api
@@ -169,6 +137,39 @@ Resources:
           Properties:
             Path: /v1/pos/opciones/{opcionId}/receta/{insumoId}
             Method: DELETE
+
+        # ========== MODIFICADORES PREDEFINIDOS ==========
+        CreateModificador:
+          Type: Api
+          Properties:
+            Path: /v1/pos/modificadores
+            Method: POST
+        ListModificadoresByProducto:
+          Type: Api
+          Properties:
+            Path: /v1/pos/productos/{productoId}/modificadores
+            Method: GET
+        ListModificadoresGlobales:
+          Type: Api
+          Properties:
+            Path: /v1/pos/modificadores/globales
+            Method: GET
+        UpdateModificador:
+          Type: Api
+          Properties:
+            Path: /v1/pos/modificadores/{modificadorId}
+            Method: PUT
+        DeleteModificador:
+          Type: Api
+          Properties:
+            Path: /v1/pos/modificadores/{modificadorId}
+            Method: DELETE
+        # Configuración Completa
+        GetProductoConfiguracionCompleta:
+          Type: Api
+          Properties:
+            Path: /v1/pos/productos/{productoId}/configuracion-completa
+            Method: GET
     Metadata:
       BuildMethod: esbuild
       BuildProperties:

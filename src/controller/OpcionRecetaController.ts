@@ -3,7 +3,7 @@ import { IOpcionRecetaController } from './IOpcionRecetaController';
 import { IOpcionRecetaBL } from '../domain/IOpcionRecetaBL';
 import { OpcionRecetaRequestDTO, UpdateOpcionRecetaRequestDTO } from '../repositories/dtos/OpcionRecetaDTO';
 import { SwaggerResponseBuilder } from '../core/common/SwaggerResponseBuilder';
-import { ValidationError, NotFoundError } from '../domain/exceptions/CustomExceptions';
+import { ValidationError, NotFoundError, ConflictError } from '../domain/exceptions/CustomExceptions';
 import { DatabaseError, DatabaseConnectionError } from '../domain/exceptions/CustomExceptions';
 import { ALLOWED_HEADERS_VALUES } from '../core/utils/Constans';
 
@@ -197,6 +197,26 @@ export class OpcionRecetaController implements IOpcionRecetaController {
 
       return {
         statusCode: 404,
+        headers: this.getCorsHeaders(),
+        body: JSON.stringify(response)
+      };
+    }
+
+    if (error instanceof ConflictError) {
+      // 409 CONFLICT
+      const errors = [
+        SwaggerResponseBuilder.buildErrorItem('E003', error.message)
+      ];
+
+      const response = SwaggerResponseBuilder.buildErrorResponse(
+        409,
+        errors,
+        messageUuid,
+        requestAppId
+      );
+
+      return {
+        statusCode: 409,
         headers: this.getCorsHeaders(),
         body: JSON.stringify(response)
       };

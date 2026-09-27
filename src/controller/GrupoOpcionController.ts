@@ -3,7 +3,7 @@ import { IGrupoOpcionController } from './IGrupoOpcionController';
 import { IGrupoOpcionBL } from '../domain/IGrupoOpcionBL';
 import { GrupoOpcionRequestDTO, UpdateGrupoOpcionRequestDTO } from '../repositories/dtos/GrupoOpcionDTO';
 import { SwaggerResponseBuilder } from '../core/common/SwaggerResponseBuilder';
-import { ValidationError, NotFoundError } from '../domain/exceptions/CustomExceptions';
+import { ValidationError, NotFoundError, ConflictError } from '../domain/exceptions/CustomExceptions';
 import { DatabaseError, DatabaseConnectionError } from '../domain/exceptions/CustomExceptions';
 import { ALLOWED_HEADERS_VALUES } from '../core/utils/Constans';
 
@@ -227,6 +227,26 @@ export class GrupoOpcionController implements IGrupoOpcionController {
 
       return {
         statusCode: 404,
+        headers: this.getCorsHeaders(),
+        body: JSON.stringify(response)
+      };
+    }
+
+    if (error instanceof ConflictError) {
+      // 409 CONFLICT
+      const errors = [
+        SwaggerResponseBuilder.buildErrorItem('E003', error.message)
+      ];
+
+      const response = SwaggerResponseBuilder.buildErrorResponse(
+        409,
+        errors,
+        messageUuid,
+        requestAppId
+      );
+
+      return {
+        statusCode: 409,
         headers: this.getCorsHeaders(),
         body: JSON.stringify(response)
       };

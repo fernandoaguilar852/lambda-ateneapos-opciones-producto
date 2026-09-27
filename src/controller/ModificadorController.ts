@@ -1,37 +1,38 @@
 import { APIGatewayProxyResult } from 'aws-lambda';
-import { IIvaController } from './IIvaController';
-import { IIvaBL } from '../domain/IIvaBL';
-import { IvaRequestDTO, PatchIvaRequestDTO } from '../repositories/dtos/IvaDTO';
+import { IModificadorController } from './IModificadorController';
+import { IModificadorBL } from '../domain/IModificadorBL';
+import { ModificadorRequestDTO, UpdateModificadorRequestDTO } from '../repositories/dtos/ModificadorDTO';
 import { SwaggerResponseBuilder } from '../core/common/SwaggerResponseBuilder';
-import { ValidationError, NotFoundError, ConflictError } from '../domain/IvaBL';
+import { ValidationError, NotFoundError, ConflictError } from '../domain/exceptions/CustomExceptions';
 import { DatabaseError, DatabaseConnectionError } from '../domain/exceptions/CustomExceptions';
 import { ALLOWED_HEADERS_VALUES } from '../core/utils/Constans';
 
-export class IvaController implements IIvaController {
+export class ModificadorController implements IModificadorController {
 
-  constructor(private ivaBL: IIvaBL) {}
+  constructor(private modificadorBL: IModificadorBL) {}
 
   /**
-   * POST /v1/pos/ivas - Crear IVA
+   * POST /v1/pos/modificadores - Crear modificador
    */
-  async createIva(
-    data: IvaRequestDTO,
+  async createModificador(
+    clienteId: number,
+    data: ModificadorRequestDTO,
     messageUuid: string,
     requestAppId: string
   ): Promise<APIGatewayProxyResult> {
     try {
       // Llamar a la lógica de negocio
-      const iva = await this.ivaBL.createIva(data);
+      const modificador = await this.modificadorBL.createModificador(clienteId, data);
 
       // Construir respuesta exitosa (201 CREATED)
       const response = SwaggerResponseBuilder.buildSuccessResponse(
         201,
-        iva,
+        modificador,
         messageUuid,
         requestAppId,
         '0000',
         'Success',
-        'Resource created successfully'
+        'Modificador creado exitosamente'
       );
 
       return {
@@ -46,21 +47,22 @@ export class IvaController implements IIvaController {
   }
 
   /**
-   * GET /v1/pos/ivas/{ivaId} - Consultar IVA por ID
+   * GET /v1/pos/productos/{productoId}/modificadores - Listar por producto
    */
-  async getIvaById(
-    ivaId: number,
+  async listModificadoresByProducto(
+    clienteId: number,
+    productoId: number,
     messageUuid: string,
     requestAppId: string
   ): Promise<APIGatewayProxyResult> {
     try {
       // Llamar a la lógica de negocio
-      const iva = await this.ivaBL.getIvaById(ivaId);
+      const result = await this.modificadorBL.listModificadoresByProducto(clienteId, productoId);
 
       // Construir respuesta exitosa (200 OK)
       const response = SwaggerResponseBuilder.buildSuccessResponse(
         200,
-        iva,
+        result,
         messageUuid,
         requestAppId
       );
@@ -77,31 +79,59 @@ export class IvaController implements IIvaController {
   }
 
   /**
-   * GET /v1/pos/ivas - Listar IVAs con paginación
+   * GET /v1/pos/modificadores/globales - Listar globales
    */
-  async listAllIvas(
+  async listModificadoresGlobales(
+    clienteId: number,
     messageUuid: string,
-    requestAppId: string,
-    pageSize: number,
-    pageNumber: number
+    requestAppId: string
   ): Promise<APIGatewayProxyResult> {
     try {
-      // Llamar a la lógica de negocio con parámetros de paginación
-      const result = await this.ivaBL.listAllIvas(pageSize, pageNumber);
-
-      // Extraer paginación del resultado
-      const { pagination, ...data } = result;
+      // Llamar a la lógica de negocio
+      const result = await this.modificadorBL.listModificadoresGlobales(clienteId);
 
       // Construir respuesta exitosa (200 OK)
       const response = SwaggerResponseBuilder.buildSuccessResponse(
         200,
-        data,
+        result,
+        messageUuid,
+        requestAppId
+      );
+
+      return {
+        statusCode: 200,
+        headers: this.getCorsHeaders(),
+        body: JSON.stringify(response)
+      };
+
+    } catch (error: any) {
+      return this.handleError(error, messageUuid, requestAppId);
+    }
+  }
+
+  /**
+   * PUT /v1/pos/modificadores/{modificadorId} - Actualizar modificador
+   */
+  async updateModificador(
+    modificadorId: number,
+    clienteId: number,
+    data: UpdateModificadorRequestDTO,
+    messageUuid: string,
+    requestAppId: string
+  ): Promise<APIGatewayProxyResult> {
+    try {
+      // Llamar a la lógica de negocio
+      const modificador = await this.modificadorBL.updateModificador(modificadorId, clienteId, data);
+
+      // Construir respuesta exitosa (200 OK)
+      const response = SwaggerResponseBuilder.buildSuccessResponse(
+        200,
+        modificador,
         messageUuid,
         requestAppId,
         '0000',
         'Success',
-        'Operation completed successfully',
-        pagination
+        'Modificador actualizado exitosamente'
       );
 
       return {
@@ -116,90 +146,27 @@ export class IvaController implements IIvaController {
   }
 
   /**
-   * PUT /v1/pos/ivas/{ivaId} - Actualizar IVA (completo)
+   * DELETE /v1/pos/modificadores/{modificadorId} - Eliminar modificador
    */
-  async updateIva(
-    ivaId: number,
-    data: IvaRequestDTO,
+  async deleteModificador(
+    modificadorId: number,
+    clienteId: number,
     messageUuid: string,
     requestAppId: string
   ): Promise<APIGatewayProxyResult> {
     try {
       // Llamar a la lógica de negocio
-      const iva = await this.ivaBL.updateIva(ivaId, data);
+      const modificador = await this.modificadorBL.deleteModificador(modificadorId, clienteId);
 
       // Construir respuesta exitosa (200 OK)
       const response = SwaggerResponseBuilder.buildSuccessResponse(
         200,
-        iva,
-        messageUuid,
-        requestAppId
-      );
-
-      return {
-        statusCode: 200,
-        headers: this.getCorsHeaders(),
-        body: JSON.stringify(response)
-      };
-
-    } catch (error: any) {
-      return this.handleError(error, messageUuid, requestAppId);
-    }
-  }
-
-  /**
-   * PATCH /v1/pos/ivas/{ivaId} - Actualizar IVA (parcial)
-   */
-  async patchIva(
-    ivaId: number,
-    data: PatchIvaRequestDTO,
-    messageUuid: string,
-    requestAppId: string
-  ): Promise<APIGatewayProxyResult> {
-    try {
-      // Llamar a la lógica de negocio
-      const iva = await this.ivaBL.patchIva(ivaId, data);
-
-      // Construir respuesta exitosa (200 OK)
-      const response = SwaggerResponseBuilder.buildSuccessResponse(
-        200,
-        iva,
-        messageUuid,
-        requestAppId
-      );
-
-      return {
-        statusCode: 200,
-        headers: this.getCorsHeaders(),
-        body: JSON.stringify(response)
-      };
-
-    } catch (error: any) {
-      return this.handleError(error, messageUuid, requestAppId);
-    }
-  }
-
-  /**
-   * DELETE /v1/pos/ivas/{ivaId} - Eliminar IVA
-   */
-  async deleteIva(
-    ivaId: number,
-    messageUuid: string,
-    requestAppId: string
-  ): Promise<APIGatewayProxyResult> {
-    try {
-      // Llamar a la lógica de negocio (retorna la data eliminada)
-      const iva = await this.ivaBL.deleteIva(ivaId);
-
-      // Construir respuesta exitosa (200 OK) con la data eliminada
-      const response = SwaggerResponseBuilder.buildSuccessResponse(
-        200,
-        iva,
+        modificador,
         messageUuid,
         requestAppId,
         '0000',
         'Success',
-        'Resource deleted successfully'
+        'Modificador eliminado exitosamente'
       );
 
       return {
@@ -221,7 +188,7 @@ export class IvaController implements IIvaController {
     messageUuid: string,
     requestAppId: string
   ): APIGatewayProxyResult {
-    console.error('Error in IvaController:', error);
+    console.error('Error in ModificadorController:', error);
 
     // Determinar el tipo de error y construir respuesta apropiada
     if (error instanceof ValidationError) {

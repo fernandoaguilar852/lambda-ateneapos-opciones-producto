@@ -1,173 +1,35 @@
 import { APIGatewayProxyResult } from 'aws-lambda';
-import { IOpcionController } from './IOpcionController';
-import { IOpcionBL } from '../domain/IOpcionBL';
-import { OpcionRequestDTO, UpdateOpcionRequestDTO } from '../repositories/dtos/OpcionDTO';
+import { IProductoConfiguracionController } from './IProductoConfiguracionController';
+import { IProductoConfiguracionBL } from '../domain/IProductoConfiguracionBL';
 import { SwaggerResponseBuilder } from '../core/common/SwaggerResponseBuilder';
 import { ValidationError, NotFoundError, ConflictError } from '../domain/exceptions/CustomExceptions';
 import { DatabaseError, DatabaseConnectionError } from '../domain/exceptions/CustomExceptions';
 import { ALLOWED_HEADERS_VALUES } from '../core/utils/Constans';
 
-export class OpcionController implements IOpcionController {
+export class ProductoConfiguracionController implements IProductoConfiguracionController {
 
-  constructor(private opcionBL: IOpcionBL) {}
-
-  /**
-   * POST /v1/pos/admin/grupos-opciones/{grupoId}/opciones - Crear Opción
-   */
-  async createOpcion(
-    clienteId: number,
-    data: OpcionRequestDTO,
-    messageUuid: string,
-    requestAppId: string
-  ): Promise<APIGatewayProxyResult> {
-    try {
-      // Llamar a la lógica de negocio
-      const opcion = await this.opcionBL.createOpcion(clienteId, data);
-
-      // Construir respuesta exitosa (201 CREATED)
-      const response = SwaggerResponseBuilder.buildSuccessResponse(
-        201,
-        opcion,
-        messageUuid,
-        requestAppId,
-        '0000',
-        'Success',
-        'Opción creada exitosamente'
-      );
-
-      return {
-        statusCode: 201,
-        headers: this.getCorsHeaders(),
-        body: JSON.stringify(response)
-      };
-
-    } catch (error: any) {
-      return this.handleError(error, messageUuid, requestAppId);
-    }
-  }
+  constructor(private productoConfiguracionBL: IProductoConfiguracionBL) {}
 
   /**
-   * GET /v1/pos/admin/opciones/{opcionId} - Obtener Opción
+   * GET /v1/pos/productos/{productoId}/configuracion-completa
+   * Obtener configuración completa de un producto
    */
-  async getOpcionById(
-    opcionId: number,
+  async getConfiguracionCompleta(
+    productoId: number,
     clienteId: number,
     messageUuid: string,
     requestAppId: string
   ): Promise<APIGatewayProxyResult> {
     try {
       // Llamar a la lógica de negocio
-      const opcion = await this.opcionBL.getOpcionById(opcionId, clienteId);
+      const configuracion = await this.productoConfiguracionBL.getConfiguracionCompleta(productoId, clienteId);
 
       // Construir respuesta exitosa (200 OK)
       const response = SwaggerResponseBuilder.buildSuccessResponse(
         200,
-        opcion,
+        configuracion,
         messageUuid,
         requestAppId
-      );
-
-      return {
-        statusCode: 200,
-        headers: this.getCorsHeaders(),
-        body: JSON.stringify(response)
-      };
-
-    } catch (error: any) {
-      return this.handleError(error, messageUuid, requestAppId);
-    }
-  }
-
-  /**
-   * GET /v1/pos/admin/grupos-opciones/{grupoId}/opciones - Listar Opciones
-   */
-  async listOpcionesByGrupo(
-    clienteId: number,
-    grupoOpcionId: number,
-    messageUuid: string,
-    requestAppId: string
-  ): Promise<APIGatewayProxyResult> {
-    try {
-      // Llamar a la lógica de negocio
-      const result = await this.opcionBL.listOpcionesByGrupo(clienteId, grupoOpcionId);
-
-      // Construir respuesta exitosa (200 OK)
-      const response = SwaggerResponseBuilder.buildSuccessResponse(
-        200,
-        result,
-        messageUuid,
-        requestAppId
-      );
-
-      return {
-        statusCode: 200,
-        headers: this.getCorsHeaders(),
-        body: JSON.stringify(response)
-      };
-
-    } catch (error: any) {
-      return this.handleError(error, messageUuid, requestAppId);
-    }
-  }
-
-  /**
-   * PUT /v1/pos/admin/opciones/{opcionId} - Actualizar Opción
-   */
-  async updateOpcion(
-    opcionId: number,
-    clienteId: number,
-    data: UpdateOpcionRequestDTO,
-    messageUuid: string,
-    requestAppId: string
-  ): Promise<APIGatewayProxyResult> {
-    try {
-      // Llamar a la lógica de negocio
-      const opcion = await this.opcionBL.updateOpcion(opcionId, clienteId, data);
-
-      // Construir respuesta exitosa (200 OK)
-      const response = SwaggerResponseBuilder.buildSuccessResponse(
-        200,
-        opcion,
-        messageUuid,
-        requestAppId,
-        '0000',
-        'Success',
-        'Opción actualizada exitosamente'
-      );
-
-      return {
-        statusCode: 200,
-        headers: this.getCorsHeaders(),
-        body: JSON.stringify(response)
-      };
-
-    } catch (error: any) {
-      return this.handleError(error, messageUuid, requestAppId);
-    }
-  }
-
-  /**
-   * DELETE /v1/pos/admin/opciones/{opcionId} - Eliminar Opción
-   */
-  async deleteOpcion(
-    opcionId: number,
-    clienteId: number,
-    messageUuid: string,
-    requestAppId: string
-  ): Promise<APIGatewayProxyResult> {
-    try {
-      // Llamar a la lógica de negocio
-      const opcion = await this.opcionBL.deleteOpcion(opcionId, clienteId);
-
-      // Construir respuesta exitosa (200 OK)
-      const response = SwaggerResponseBuilder.buildSuccessResponse(
-        200,
-        opcion,
-        messageUuid,
-        requestAppId,
-        '0000',
-        'Success',
-        'Opción eliminada exitosamente'
       );
 
       return {
@@ -189,7 +51,7 @@ export class OpcionController implements IOpcionController {
     messageUuid: string,
     requestAppId: string
   ): APIGatewayProxyResult {
-    console.error('Error in OpcionController:', error);
+    console.error('Error in ProductoConfiguracionController:', error);
 
     // Determinar el tipo de error y construir respuesta apropiada
     if (error instanceof ValidationError) {

@@ -79,73 +79,9 @@ export const enum Message {
 export const ERROR_QUERY_EXCEPTION_MESSAGE = 'The database query has fail';
 
 // ===========================
-// QUERIES IVA (PostgreSQL)
+// QUERIES SQL (PostgreSQL)
 // ===========================
 export enum QUERIES {
-    CREATE_IVA = `
-        INSERT INTO iva (descripcion, valor, activo)
-        VALUES ($1, $2, $3)
-        RETURNING iva_id, descripcion, valor, activo
-    `,
-
-    GET_IVA_BY_ID = `
-        SELECT iva_id, descripcion, valor, activo
-        FROM iva
-        WHERE iva_id = $1
-    `,
-
-    LIST_ALL_IVAS = `
-        SELECT iva_id, descripcion, valor, activo
-        FROM iva
-        WHERE activo = true
-        ORDER BY iva_id
-    `,
-
-    COUNT_ALL_IVAS = `
-        SELECT COUNT(*) as count
-        FROM iva
-        WHERE activo = true
-    `,
-
-    LIST_IVAS_PAGINATED = `
-        SELECT iva_id, descripcion, valor, activo
-        FROM iva
-        WHERE activo = true
-        ORDER BY iva_id
-        LIMIT $1 OFFSET $2
-    `,
-
-    UPDATE_IVA = `
-        UPDATE iva
-        SET descripcion = $1,
-            valor = $2,
-            activo = $3
-        WHERE iva_id = $4
-        RETURNING iva_id, descripcion, valor, activo
-    `,
-
-    PATCH_IVA = `
-        UPDATE iva
-        SET descripcion = COALESCE($1, descripcion),
-            valor = COALESCE($2, valor),
-            activo = COALESCE($3, activo)
-        WHERE iva_id = $4
-        RETURNING iva_id, descripcion, valor, activo
-    `,
-
-    DELETE_IVA = `
-        UPDATE iva
-        SET activo = false
-        WHERE iva_id = $1
-        RETURNING iva_id, descripcion, valor, activo
-    `,
-
-    CHECK_IVA_EXISTS_BY_DESCRIPCION = `
-        SELECT COUNT(*) as count
-        FROM iva
-        WHERE descripcion = $1 AND iva_id != $2
-    `,
-
     // ===========================
     // GRUPOS DE OPCIONES
     // ===========================
@@ -302,6 +238,80 @@ export enum QUERIES {
         WHERE opcion_id = $1 AND insumo_id = $2 AND cliente_id = $3 AND activo = true
         RETURNING opcion_receta_id, cliente_id, opcion_id, insumo_id,
                   cantidad_base, merma_pct, activo, created_at
+    `,
+
+    // ===========================
+    // MODIFICADORES PREDEFINIDOS
+    // ===========================
+
+    CREATE_MODIFICADOR = `
+        INSERT INTO producto_modificador_predefinido (
+            cliente_id, producto_id, tipo, nombre,
+            descripcion, precio_adicional, orden, activo
+        )
+        VALUES ($1, $2, $3, $4, $5, $6, $7, true)
+        RETURNING modificador_id, cliente_id, producto_id, tipo, nombre,
+                  descripcion, precio_adicional, orden, activo, created_at
+    `,
+
+    LIST_MODIFICADORES_BY_PRODUCTO = `
+        SELECT modificador_id, cliente_id, producto_id, tipo, nombre,
+               descripcion, precio_adicional, orden, activo, created_at
+        FROM producto_modificador_predefinido
+        WHERE cliente_id = $1 AND producto_id = $2 AND activo = true
+        ORDER BY orden ASC, nombre ASC
+    `,
+
+    LIST_MODIFICADORES_GLOBALES = `
+        SELECT modificador_id, cliente_id, producto_id, tipo, nombre,
+               descripcion, precio_adicional, orden, activo, created_at
+        FROM producto_modificador_predefinido
+        WHERE cliente_id = $1 AND producto_id IS NULL AND activo = true
+        ORDER BY orden ASC, nombre ASC
+    `,
+
+    UPDATE_MODIFICADOR = `
+        UPDATE producto_modificador_predefinido
+        SET tipo = $1,
+            nombre = $2,
+            descripcion = $3,
+            precio_adicional = $4,
+            orden = $5
+        WHERE modificador_id = $6 AND cliente_id = $7 AND activo = true
+        RETURNING modificador_id, cliente_id, producto_id, tipo, nombre,
+                  descripcion, precio_adicional, orden, activo, created_at
+    `,
+
+    DELETE_MODIFICADOR = `
+        UPDATE producto_modificador_predefinido
+        SET activo = false
+        WHERE modificador_id = $1 AND cliente_id = $2 AND activo = true
+        RETURNING modificador_id, cliente_id, producto_id, tipo, nombre,
+                  descripcion, precio_adicional, orden, activo, created_at
+    `,
+
+    // ===========================
+    // CONFIGURACIÓN COMPLETA DEL PRODUCTO
+    // ===========================
+
+    GET_PRODUCTO_BY_ID = `
+        SELECT producto_id, cliente_id, tipo_producto_id, nombre,
+               cod_externo, cod_barras, imagen, precio,
+               unidad_medida, sigla, stock_total, stock_reservado,
+               stock_minimo, maneja_stock, usa_receta, activo, iva_id
+        FROM producto
+        WHERE producto_id = $1 AND cliente_id = $2 AND activo = true
+    `,
+
+    GET_MODIFICADORES_BY_PRODUCTO_COMPLETO = `
+        SELECT modificador_id, cliente_id, producto_id, tipo, nombre,
+               descripcion, precio_adicional, orden,
+               (producto_id IS NULL) as es_global
+        FROM producto_modificador_predefinido
+        WHERE cliente_id = $1
+          AND (producto_id = $2 OR producto_id IS NULL)
+          AND activo = true
+        ORDER BY es_global ASC, orden ASC, nombre ASC
     `,
 }
 
