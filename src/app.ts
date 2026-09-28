@@ -74,7 +74,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent, context: Contex
         // 1. Extrae token del header Authorization
         // 2. Valida firma con JWT_SECRET (cache de 10 min)
         // 3. Valida expiración
-        // NO valida clienteId porque IVA es global
+        // 4. Extrae clienteId del payload para multi-tenancy
         const authResult = await authenticateRequest(event);
 
         if (!authResult.authorized) {
