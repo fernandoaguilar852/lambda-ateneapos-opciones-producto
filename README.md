@@ -213,10 +213,12 @@ curl -X POST https://your-api-url/v1/pos/opciones/1/receta \
   -d '{
     "opcionId": 1,
     "insumoId": 321,
-    "cantidad": 2.5,
-    "unidadMedida": "gr"
+    "cantidadBase": 150.5,
+    "mermaPct": 5
   }'
 ```
+
+**Nota:** `mermaPct` es el porcentaje de merma/desperdicio (0-100). Por ejemplo, 5 = 5% de merma.
 
 ### 12. Obtener Receta Completa
 ```bash
@@ -234,8 +236,8 @@ curl -X PUT https://your-api-url/v1/pos/opciones/1/receta/321 \
   -H "request-app-id: pos-admin-app" \
   -H "Content-Type: application/json" \
   -d '{
-    "cantidad": 3.0,
-    "unidadMedida": "ml"
+    "cantidadBase": 200.0,
+    "mermaPct": 10
   }'
 ```
 
@@ -398,8 +400,8 @@ curl -X GET https://your-api-url/v1/pos/productos/123/configuracion-completa \
                 "opcionId": 1,
                 "insumoId": 10,
                 "insumoNombre": "Pan grande",
-                "cantidad": 1,
-                "unidadMedida": "unidad",
+                "cantidadBase": 150.0,
+                "mermaPct": 5,
                 "activo": true
               }
             ]
@@ -614,7 +616,7 @@ curl -X POST https://your-api-url/v1/pos/opciones/1/receta \
   -H "message-uuid: $(uuidgen)" \
   -H "request-app-id: pos-test" \
   -H "Content-Type: application/json" \
-  -d '{"opcionId":1,"insumoId":321,"cantidad":1,"unidadMedida":"unidad"}'
+  -d '{"opcionId":1,"insumoId":321,"cantidadBase":150.0,"mermaPct":5}'
 
 # 4. Crear modificador global
 curl -X POST https://your-api-url/v1/pos/modificadores \

@@ -50,8 +50,8 @@ export class ProductoConfiguracionRepository implements IProductoConfiguracionRe
             opcion_id: row.opcion_id,
             insumo_id: row.insumo_id,
             insumo_nombre: row.insumo_nombre,
-            cantidad: row.cantidad_base,
-            unidad_medida: 'unidad', // Por defecto, se puede ajustar según la lógica
+            cantidad_base: row.cantidad_base,
+            merma_pct: row.merma_pct,
             activo: row.activo
           }));
 

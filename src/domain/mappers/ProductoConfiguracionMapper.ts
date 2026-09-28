@@ -28,8 +28,8 @@ export class ProductoConfiguracionMapper {
       opcionId: dto.opcion_id,
       insumoId: dto.insumo_id,
       insumoNombre: dto.insumo_nombre,
-      cantidad: dto.cantidad,
-      unidadMedida: dto.unidad_medida,
+      cantidadBase: dto.cantidad_base,
+      mermaPct: dto.merma_pct,
       activo: dto.activo
     };
   }

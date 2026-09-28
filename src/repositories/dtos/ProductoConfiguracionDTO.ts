@@ -33,8 +33,8 @@ export interface RecetaInsumoDTO {
   opcion_id: number;
   insumo_id: number;
   insumo_nombre: string;
-  cantidad: number;
-  unidad_medida: string;
+  cantidad_base: number;
+  merma_pct: number;
   activo: boolean;
 }
 

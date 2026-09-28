@@ -11,8 +11,8 @@ export interface RecetaInsumo {
   opcionId: number;
   insumoId: number;
   insumoNombre: string;
-  cantidad: number;
-  unidadMedida: string;
+  cantidadBase: number;
+  mermaPct: number;
   activo: boolean;
 }
 
