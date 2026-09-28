@@ -28,8 +28,8 @@ export class ProductoConfiguracionMapper {
       opcionId: dto.opcion_id,
       insumoId: dto.insumo_id,
       insumoNombre: dto.insumo_nombre,
-      cantidadBase: parseFloat(parseFloat(String(dto.cantidad_base)).toFixed(3)),
-      mermaPct: parseFloat(parseFloat(String(dto.merma_pct)).toFixed(2)),
+      cantidadBase: dto.cantidad_base != null ? parseFloat(parseFloat(String(dto.cantidad_base)).toFixed(3)) : 0,
+      mermaPct: dto.merma_pct != null ? parseFloat(parseFloat(String(dto.merma_pct)).toFixed(2)) : 0,
       activo: dto.activo
     };
   }
@@ -43,12 +43,12 @@ export class ProductoConfiguracionMapper {
       grupoOpcionId: dto.grupo_opcion_id,
       nombre: dto.nombre,
       descripcion: dto.descripcion,
-      precioAdicional: parseFloat(parseFloat(String(dto.precio_adicional)).toFixed(2)),
+      precioAdicional: dto.precio_adicional != null ? parseFloat(parseFloat(String(dto.precio_adicional)).toFixed(2)) : 0,
       disponible: dto.disponible,
       orden: dto.orden,
       activo: dto.activo,
       createdAt: dto.created_at,
-      receta: dto.receta.map(this.recetaInsumoToDomain)
+      receta: dto.receta.map(ProductoConfiguracionMapper.recetaInsumoToDomain)
     };
   }
 
@@ -68,7 +68,7 @@ export class ProductoConfiguracionMapper {
       orden: dto.orden,
       activo: dto.activo,
       createdAt: dto.created_at,
-      opciones: dto.opciones.map(this.opcionConRecetaToDomain)
+      opciones: dto.opciones.map(ProductoConfiguracionMapper.opcionConRecetaToDomain)
     };
   }
 
@@ -82,7 +82,7 @@ export class ProductoConfiguracionMapper {
       tipo: dto.tipo,
       nombre: dto.nombre,
       descripcion: dto.descripcion,
-      precioAdicional: parseFloat(parseFloat(String(dto.precio_adicional)).toFixed(2)),
+      precioAdicional: dto.precio_adicional != null ? parseFloat(parseFloat(String(dto.precio_adicional)).toFixed(2)) : 0,
       orden: dto.orden,
       esGlobal: dto.es_global
     };
@@ -101,7 +101,7 @@ export class ProductoConfiguracionMapper {
       codExterno: dto.cod_externo,
       codBarras: dto.cod_barras,
       imagen: dto.imagen,
-      precio: parseFloat(parseFloat(String(dto.precio)).toFixed(2)),
+      precio: dto.precio != null ? parseFloat(parseFloat(String(dto.precio)).toFixed(2)) : 0,
       unidadMedida: dto.unidad_medida,
       sigla: dto.sigla,
       stockTotal: dto.stock_total,
@@ -113,8 +113,8 @@ export class ProductoConfiguracionMapper {
       ivaId: dto.iva_id,
 
       // Configuración de opciones y modificadores
-      gruposOpciones: dto.grupos_opciones.map(this.grupoOpcionCompletoToDomain),
-      modificadores: dto.modificadores.map(this.modificadorProductoToDomain)
+      gruposOpciones: dto.grupos_opciones.map(ProductoConfiguracionMapper.grupoOpcionCompletoToDomain),
+      modificadores: dto.modificadores.map(ProductoConfiguracionMapper.modificadorProductoToDomain)
     };
   }
 }

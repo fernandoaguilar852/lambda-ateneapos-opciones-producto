@@ -12,8 +12,8 @@ export class OpcionRecetaMapper {
       clienteId: dto.cliente_id,
       opcionId: dto.opcion_id,
       insumoId: dto.insumo_id,
-      cantidadBase: parseFloat(parseFloat(String(dto.cantidad_base)).toFixed(3)),
-      mermaPct: parseFloat(parseFloat(String(dto.merma_pct)).toFixed(2)),
+      cantidadBase: dto.cantidad_base != null ? parseFloat(parseFloat(String(dto.cantidad_base)).toFixed(3)) : 0,
+      mermaPct: dto.merma_pct != null ? parseFloat(parseFloat(String(dto.merma_pct)).toFixed(2)) : 0,
       activo: dto.activo,
       createdAt: dto.created_at
     };
@@ -28,8 +28,8 @@ export class OpcionRecetaMapper {
       clienteId: dto.cliente_id,
       opcionId: dto.opcion_id,
       insumoId: dto.insumo_id,
-      cantidadBase: parseFloat(parseFloat(String(dto.cantidad_base)).toFixed(3)),
-      mermaPct: parseFloat(parseFloat(String(dto.merma_pct)).toFixed(2)),
+      cantidadBase: dto.cantidad_base != null ? parseFloat(parseFloat(String(dto.cantidad_base)).toFixed(3)) : 0,
+      mermaPct: dto.merma_pct != null ? parseFloat(parseFloat(String(dto.merma_pct)).toFixed(2)) : 0,
       activo: dto.activo,
       createdAt: dto.created_at,
       insumoNombre: dto.insumo_nombre
