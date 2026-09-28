@@ -12,7 +12,7 @@ export class OpcionMapper {
       grupoOpcionId: dto.grupo_opcion_id,
       clienteId: dto.cliente_id,
       nombre: dto.nombre,
-      precioAdicional: dto.precio_adicional,
+      precioAdicional: parseFloat(parseFloat(String(dto.precio_adicional)).toFixed(2)),
       porDefecto: dto.por_defecto,
       orden: dto.orden,
       activo: dto.activo,

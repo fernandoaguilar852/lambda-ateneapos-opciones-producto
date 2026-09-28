@@ -28,8 +28,8 @@ export class ProductoConfiguracionMapper {
       opcionId: dto.opcion_id,
       insumoId: dto.insumo_id,
       insumoNombre: dto.insumo_nombre,
-      cantidadBase: dto.cantidad_base,
-      mermaPct: dto.merma_pct,
+      cantidadBase: parseFloat(parseFloat(String(dto.cantidad_base)).toFixed(3)),
+      mermaPct: parseFloat(parseFloat(String(dto.merma_pct)).toFixed(2)),
       activo: dto.activo
     };
   }
@@ -43,7 +43,7 @@ export class ProductoConfiguracionMapper {
       grupoOpcionId: dto.grupo_opcion_id,
       nombre: dto.nombre,
       descripcion: dto.descripcion,
-      precioAdicional: dto.precio_adicional,
+      precioAdicional: parseFloat(parseFloat(String(dto.precio_adicional)).toFixed(2)),
       disponible: dto.disponible,
       orden: dto.orden,
       activo: dto.activo,
@@ -82,7 +82,7 @@ export class ProductoConfiguracionMapper {
       tipo: dto.tipo,
       nombre: dto.nombre,
       descripcion: dto.descripcion,
-      precioAdicional: dto.precio_adicional,
+      precioAdicional: parseFloat(parseFloat(String(dto.precio_adicional)).toFixed(2)),
       orden: dto.orden,
       esGlobal: dto.es_global
     };
@@ -101,7 +101,7 @@ export class ProductoConfiguracionMapper {
       codExterno: dto.cod_externo,
       codBarras: dto.cod_barras,
       imagen: dto.imagen,
-      precio: dto.precio,
+      precio: parseFloat(parseFloat(String(dto.precio)).toFixed(2)),
       unidadMedida: dto.unidad_medida,
       sigla: dto.sigla,
       stockTotal: dto.stock_total,

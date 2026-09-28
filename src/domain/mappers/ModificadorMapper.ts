@@ -14,7 +14,7 @@ export class ModificadorMapper {
       tipo: dto.tipo,
       nombre: dto.nombre,
       descripcion: dto.descripcion,
-      precioAdicional: dto.precio_adicional,
+      precioAdicional: parseFloat(parseFloat(String(dto.precio_adicional)).toFixed(2)),
       activo: dto.activo,
       orden: dto.orden,
       createdAt: dto.created_at
