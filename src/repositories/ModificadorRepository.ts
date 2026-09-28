@@ -31,6 +31,26 @@ export class ModificadorRepository implements IModificadorRepository {
   }
 
   /**
+   * Obtener un modificador por ID
+   */
+  async getModificadorById(modificadorId: number, clienteId: number): Promise<ModificadorDTO | null> {
+    try {
+      const result = await mysqlClient.query(
+        QUERIES.GET_MODIFICADOR_BY_ID,
+        [modificadorId, clienteId]
+      );
+
+      if (result.rows.length === 0) {
+        return null;
+      }
+
+      return result.rows[0] as ModificadorDTO;
+    } catch (error: any) {
+      PostgresErrorHandler.handleError(error, 'getModificadorById');
+    }
+  }
+
+  /**
    * Listar modificadores de un producto específico
    */
   async listModificadoresByProducto(clienteId: number, productoId: number): Promise<ModificadorDTO[]> {

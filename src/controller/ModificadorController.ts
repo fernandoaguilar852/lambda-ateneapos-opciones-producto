@@ -47,6 +47,38 @@ export class ModificadorController implements IModificadorController {
   }
 
   /**
+   * GET /v1/pos/modificadores/{modificadorId} - Obtener por ID
+   */
+  async getModificadorById(
+    modificadorId: number,
+    clienteId: number,
+    messageUuid: string,
+    requestAppId: string
+  ): Promise<APIGatewayProxyResult> {
+    try {
+      // Llamar a la lógica de negocio
+      const modificador = await this.modificadorBL.getModificadorById(modificadorId, clienteId);
+
+      // Construir respuesta exitosa (200 OK)
+      const response = SwaggerResponseBuilder.buildSuccessResponse(
+        200,
+        modificador,
+        messageUuid,
+        requestAppId
+      );
+
+      return {
+        statusCode: 200,
+        headers: this.getCorsHeaders(),
+        body: JSON.stringify(response)
+      };
+
+    } catch (error: any) {
+      return this.handleError(error, messageUuid, requestAppId);
+    }
+  }
+
+  /**
    * GET /v1/pos/productos/{productoId}/modificadores - Listar por producto
    */
   async listModificadoresByProducto(

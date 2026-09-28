@@ -9,6 +9,13 @@ export interface IModificadorController {
     requestAppId: string
   ): Promise<APIGatewayProxyResult>;
 
+  getModificadorById(
+    modificadorId: number,
+    clienteId: number,
+    messageUuid: string,
+    requestAppId: string
+  ): Promise<APIGatewayProxyResult>;
+
   listModificadoresByProducto(
     clienteId: number,
     productoId: number,

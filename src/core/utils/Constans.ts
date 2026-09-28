@@ -254,6 +254,13 @@ export enum QUERIES {
                   descripcion, precio_adicional, orden, activo, created_at
     `,
 
+    GET_MODIFICADOR_BY_ID = `
+        SELECT modificador_id, cliente_id, producto_id, tipo, nombre,
+               descripcion, precio_adicional, orden, activo, created_at
+        FROM producto_modificador_predefinido
+        WHERE modificador_id = $1 AND cliente_id = $2 AND activo = true
+    `,
+
     LIST_MODIFICADORES_BY_PRODUCTO = `
         SELECT modificador_id, cliente_id, producto_id, tipo, nombre,
                descripcion, precio_adicional, orden, activo, created_at

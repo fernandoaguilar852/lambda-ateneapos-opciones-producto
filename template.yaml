@@ -144,6 +144,11 @@ Resources:
           Properties:
             Path: /v1/pos/modificadores
             Method: POST
+        GetModificador:
+          Type: Api
+          Properties:
+            Path: /v1/pos/modificadores/{modificadorId}
+            Method: GET
         ListModificadoresByProducto:
           Type: Api
           Properties:

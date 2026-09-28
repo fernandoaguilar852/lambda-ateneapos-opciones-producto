@@ -29,6 +29,30 @@ export class ModificadorBL implements IModificadorBL {
   }
 
   /**
+   * Obtener un modificador por ID
+   */
+  async getModificadorById(modificadorId: number, clienteId: number): Promise<Modificador> {
+    // Validar IDs
+    if (!modificadorId || modificadorId <= 0) {
+      throw new ValidationError('El modificadorId debe ser un número positivo válido');
+    }
+
+    if (!clienteId || clienteId <= 0) {
+      throw new ValidationError('El clienteId debe ser un número positivo válido');
+    }
+
+    // Obtener el modificador
+    const modificadorDTO = await this.modificadorRepository.getModificadorById(modificadorId, clienteId);
+
+    if (!modificadorDTO) {
+      throw new NotFoundError(`Modificador ${modificadorId} no encontrado`);
+    }
+
+    // Transformar a modelo de dominio
+    return ModificadorMapper.toDomain(modificadorDTO);
+  }
+
+  /**
    * Listar modificadores de un producto específico
    */
   async listModificadoresByProducto(clienteId: number, productoId: number): Promise<ModificadorListData> {

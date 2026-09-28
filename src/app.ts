@@ -270,6 +270,12 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent, context: Contex
             return await modificadorController.createModificador(clienteId, body, messageUuid, requestAppId);
         }
 
+        // GET /v1/pos/modificadores/{modificadorId} - Obtener modificador por ID
+        if (method === 'GET' && path.match(/^\/v1\/pos\/modificadores\/\d+$/) && !path.includes('globales')) {
+            const modificadorId = parseInt(event.pathParameters?.modificadorId || '0');
+            return await modificadorController.getModificadorById(modificadorId, clienteId, messageUuid, requestAppId);
+        }
+
         // GET /v1/pos/productos/{productoId}/modificadores - Listar modificadores por producto
         if (method === 'GET' && path.match(/^\/v1\/pos\/productos\/\d+\/modificadores$/)) {
             const productoId = parseInt(event.pathParameters?.productoId || '0');

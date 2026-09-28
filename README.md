@@ -60,7 +60,7 @@ Esta Lambda proporciona una API REST completa para gestionar la configuración d
         └────────────────────────┘
 ```
 
-## 🚀 Endpoints (20 total)
+## 🚀 Endpoints (21 total)
 
 ### Base URL
 ```
@@ -286,27 +286,35 @@ curl -X POST https://your-api-url/v1/pos/modificadores \
   }'
 ```
 
-### 16. Listar Modificadores por Producto
+### 16. Obtener Modificador por ID
 ```bash
-curl -X GET https://your-api-url/v1/pos/productos/123/modificadores \
+curl -X GET https://your-api-url/v1/pos/modificadores/1 \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
   -H "message-uuid: 550e8400-e29b-41d4-a716-446655440016" \
   -H "request-app-id: pos-admin-app"
 ```
 
-### 17. Listar Modificadores Globales
+### 17. Listar Modificadores por Producto
 ```bash
-curl -X GET https://your-api-url/v1/pos/modificadores/globales \
+curl -X GET https://your-api-url/v1/pos/productos/123/modificadores \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
   -H "message-uuid: 550e8400-e29b-41d4-a716-446655440017" \
   -H "request-app-id: pos-admin-app"
 ```
 
-### 18. Actualizar Modificador
+### 18. Listar Modificadores Globales
+```bash
+curl -X GET https://your-api-url/v1/pos/modificadores/globales \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -H "message-uuid: 550e8400-e29b-41d4-a716-446655440018" \
+  -H "request-app-id: pos-admin-app"
+```
+
+### 19. Actualizar Modificador
 ```bash
 curl -X PUT https://your-api-url/v1/pos/modificadores/1 \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
-  -H "message-uuid: 550e8400-e29b-41d4-a716-446655440018" \
+  -H "message-uuid: 550e8400-e29b-41d4-a716-446655440019" \
   -H "request-app-id: pos-admin-app" \
   -H "Content-Type: application/json" \
   -d '{
@@ -318,11 +326,11 @@ curl -X PUT https://your-api-url/v1/pos/modificadores/1 \
   }'
 ```
 
-### 19. Eliminar Modificador
+### 20. Eliminar Modificador
 ```bash
 curl -X DELETE https://your-api-url/v1/pos/modificadores/1 \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
-  -H "message-uuid: 550e8400-e29b-41d4-a716-446655440019" \
+  -H "message-uuid: 550e8400-e29b-41d4-a716-446655440020" \
   -H "request-app-id: pos-admin-app"
 ```
 
@@ -330,12 +338,12 @@ curl -X DELETE https://your-api-url/v1/pos/modificadores/1 \
 
 ## 📚 Módulo 5: Configuración Completa ⭐
 
-### 20. Obtener Configuración Completa del Producto
+### 21. Obtener Configuración Completa del Producto
 ```bash
 # Retorna: datos del producto + grupos + opciones + recetas + modificadores
 curl -X GET https://your-api-url/v1/pos/productos/123/configuracion-completa \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
-  -H "message-uuid: 550e8400-e29b-41d4-a716-446655440020" \
+  -H "message-uuid: 550e8400-e29b-41d4-a716-446655440021" \
   -H "request-app-id: pos-admin-app"
 ```
 
@@ -345,7 +353,7 @@ curl -X GET https://your-api-url/v1/pos/productos/123/configuracion-completa \
   "headers": {
     "httpStatusCode": 200,
     "httpStatusDesc": "OK",
-    "messageUuid": "550e8400-e29b-41d4-a716-446655440020",
+    "messageUuid": "550e8400-e29b-41d4-a716-446655440021",
     "requestDatetime": "2026-09-27T23:31:24.605Z",
     "requestAppId": "pos-admin-app"
   },
