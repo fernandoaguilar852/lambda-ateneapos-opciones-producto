@@ -84,6 +84,7 @@ export class OpcionRepository implements IOpcionRepository {
       const precioAdicional = data.precioAdicional ?? 0;
       const porDefecto = data.porDefecto ?? false;
       const orden = data.orden ?? 0;
+      const activo = data.activo ?? true;
 
       const result = await mysqlClient.query(
         QUERIES.UPDATE_OPCION,
@@ -92,6 +93,7 @@ export class OpcionRepository implements IOpcionRepository {
           precioAdicional,
           porDefecto,
           orden,
+          activo,
           opcionId,
           clienteId
         ]

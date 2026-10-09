@@ -62,7 +62,7 @@ export class ProductoConfiguracionRepository implements IProductoConfiguracionRe
             nombre: opcionRow.nombre,
             descripcion: null, // La tabla producto_opcion no tiene descripcion según DDL
             precio_adicional: opcionRow.precio_adicional,
-            disponible: opcionRow.por_defecto, // Mapeo temporal, ajustar según lógica
+            por_defecto: opcionRow.por_defecto,
             orden: opcionRow.orden,
             activo: opcionRow.activo,
             created_at: opcionRow.created_at,

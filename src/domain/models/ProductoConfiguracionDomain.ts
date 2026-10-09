@@ -25,7 +25,7 @@ export interface OpcionConReceta {
   nombre: string;
   descripcion: string | null;
   precioAdicional: number;
-  disponible: boolean;
+  porDefecto: boolean;  // TRUE = opción preseleccionada en frontend
   orden: number;
   activo: boolean;
   createdAt: Date;

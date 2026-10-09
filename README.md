@@ -152,9 +152,8 @@ curl -X POST https://your-api-url/v1/pos/grupos-opciones/1/opciones \
   -d '{
     "grupoOpcionId": 1,
     "nombre": "Grande",
-    "descripcion": "16 oz",
     "precioAdicional": 5.00,
-    "disponible": true,
+    "porDefecto": true,
     "orden": 1
   }'
 ```
@@ -184,10 +183,10 @@ curl -X PUT https://your-api-url/v1/pos/opciones/1 \
   -H "Content-Type: application/json" \
   -d '{
     "nombre": "Extra Grande",
-    "descripcion": "20 oz",
     "precioAdicional": 8.00,
-    "disponible": true,
-    "orden": 2
+    "porDefecto": false,
+    "orden": 2,
+    "activo": true
   }'
 ```
 

@@ -26,4 +26,5 @@ export interface UpdateOpcionRequestDTO {
   precioAdicional?: number;
   porDefecto?: boolean;
   orden?: number;
+  activo?: boolean;
 }

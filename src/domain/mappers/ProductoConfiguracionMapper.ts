@@ -44,7 +44,7 @@ export class ProductoConfiguracionMapper {
       nombre: dto.nombre,
       descripcion: dto.descripcion,
       precioAdicional: dto.precio_adicional != null ? parseFloat(parseFloat(String(dto.precio_adicional)).toFixed(2)) : 0,
-      disponible: dto.disponible,
+      porDefecto: dto.por_defecto,
       orden: dto.orden,
       activo: dto.activo,
       createdAt: dto.created_at,

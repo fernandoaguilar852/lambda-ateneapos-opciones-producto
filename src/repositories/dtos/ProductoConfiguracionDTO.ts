@@ -47,7 +47,7 @@ export interface OpcionConRecetaDTO {
   nombre: string;
   descripcion: string | null;
   precio_adicional: number;
-  disponible: boolean;
+  por_defecto: boolean;  // TRUE = opción preseleccionada en frontend
   orden: number;
   activo: boolean;
   created_at: Date;

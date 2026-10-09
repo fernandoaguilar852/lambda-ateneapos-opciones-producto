@@ -178,8 +178,9 @@ export enum QUERIES {
         SET nombre = $1,
             precio_adicional = $2,
             por_defecto = $3,
-            orden = $4
-        WHERE opcion_id = $5 AND cliente_id = $6 AND activo = true
+            orden = $4,
+            activo = $5
+        WHERE opcion_id = $6 AND cliente_id = $7
         RETURNING opcion_id, grupo_opcion_id, cliente_id, nombre,
                   precio_adicional, por_defecto, orden, activo, created_at
     `,
